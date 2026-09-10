@@ -13,7 +13,10 @@ game files, the injector source, mod binaries, credentials or tester reports.
 | --- | --- |
 | News | https://presfox.github.io/world-overhaul-backend/news.json |
 | Updates | https://presfox.github.io/world-overhaul-backend/updates.json |
-| Workshop compatibility | https://presfox.github.io/world-overhaul-backend/compatibility.json |
+| Workshop requirements and incompatibilities | https://presfox.github.io/world-overhaul-backend/workshop.json |
+
+The earlier `compatibility.json` URL remains a deployment-generated alias of
+`workshop.json`. Edit only `site/workshop.json` for Workshop rules.
 
 All feeds use `schemaVersion: 1`. Initial arrays are deliberately empty: there
 are no announced releases or active Workshop rules in this initial deployment.
@@ -68,7 +71,7 @@ integrity verification must remain in the installer/updater implementation.
 
 ## Workshop compatibility contract
 
-`compatibility.json` contains `schemaVersion`, `requiredWorkshopIds` and
+`workshop.json` contains `schemaVersion`, `requiredWorkshopIds` and
 `incompatibleWorkshopIds`. Both lists contain **decimal strings**, for example
 `"123456789"`, preserving uint64 precision across JSON consumers.
 
@@ -85,12 +88,18 @@ The local launcher INI can point to these feeds:
 ```ini
 $NEWS_URL "https://presfox.github.io/world-overhaul-backend/news.json"
 $UPDATES_URL "https://presfox.github.io/world-overhaul-backend/updates.json"
-$COMPATIBILITY_URL "https://presfox.github.io/world-overhaul-backend/compatibility.json"
+$COMPATIBILITY_URL "https://presfox.github.io/world-overhaul-backend/workshop.json"
 ```
 
-The injector currently loads and validates these URL settings. Remote feed
-retrieval/display and Workshop rule enforcement are not implemented yet.
-Before implementing them, define how remote compatibility lists combine with
-local INI rules. The hosted lists do not change a player's Steam subscriptions.
+The injector synchronises Workshop rules at startup, during a successful Steam
+inventory refresh, and through Settings > Sync Workshop rules. `workshop.json`
+is authoritative for the local `$REQUIRED_WORKSHOP_ID` and
+`$INCOMPATIBLE_WORKSHOP_ID` lists: additions and removals replace the local sets;
+empty arrays clear them. Equal sets do not rewrite the INI. Other preferences,
+comments and the separate player whitelist are preserved. Failed requests,
+invalid JSON or conflicting file edits retain the previous valid configuration.
+
+News/update retrieval, Workshop rule enforcement and UI classification remain
+future work. These feeds do not change Steam subscriptions.
 
 This public static service does not accept uploads or store private settings.

@@ -71,7 +71,7 @@ def validate():
         require(key not in channels, "Only one current release per component/channel")
         channels.add(key)
 
-    rules = read("compatibility.json", ["requiredWorkshopIds", "incompatibleWorkshopIds"])
+    rules = read("workshop.json", ["requiredWorkshopIds", "incompatibleWorkshopIds"])
     for key in ["requiredWorkshopIds", "incompatibleWorkshopIds"]:
         for value in rules[key]:
             require(type(value) is str and re.fullmatch(r"[1-9][0-9]*", value) and int(value) <= 18446744073709551615,
