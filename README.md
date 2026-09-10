@@ -18,7 +18,7 @@ game files, the injector source, mod binaries, credentials or tester reports.
 The earlier `compatibility.json` URL remains a deployment-generated alias of
 `workshop.json`. Edit only `site/workshop.json` for Workshop rules.
 
-Workshop rules use `schemaVersion: 2`; news and updates remain version 1. Initial arrays are deliberately empty: there
+Workshop rules use `schemaVersion: 3`; news and updates remain version 1. Initial arrays are deliberately empty: there
 are no announced releases or active Workshop rules in this initial deployment.
 
 ## Editing and publishing
@@ -73,27 +73,36 @@ integrity verification must remain in the installer/updater implementation.
 
 `workshop.json` contains `schemaVersion`, `requiredWorkshopIds` and
 `incompatibleWorkshopIds`. Required entries contain an `id` and a `type` of
-exactly `"component"` or `"content"`. IDs remain **decimal strings**, preserving
+exactly `"component"` or `"content"`. Components also require an exact `version`;
+content entries have no custom version. IDs remain **decimal strings**, preserving
 uint64 precision. Incompatible entries remain ID strings. For example (illustrative IDs only):
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "requiredWorkshopIds": [
-    {"id": "123456789", "type": "component"},
+    {"id": "123456789", "type": "component", "version": "1.0.0"},
     {"id": "234567890", "type": "content"}
   ],
   "incompatibleWorkshopIds": []
 }
 ```
 
-The injector preserves types as `$REQUIRED_WORKSHOP_ID 123456789 COMPONENT`
+The injector preserves types as `$REQUIRED_WORKSHOP_ID 123456789 COMPONENT 1.0.0`
 or `$REQUIRED_WORKSHOP_ID 234567890 CONTENT` in `WorldOverhaul/injector.ini`.
-Legacy local entries without a type are read as CONTENT. Schema 2 JSON always
-requires an explicit type; invalid/missing types reject the complete update.
-A type-only change updates the INI. Both types use the same subscription check;
-this metadata does not yet change installation/copying or whitelist behavior.
-Older injectors reject schema 2 and retain their last valid configuration.
+Legacy local entries without a type are read as CONTENT. Schema 3 JSON always
+requires an explicit type and a component version. Invalid fields reject the
+complete update. Type-only and version-only changes update the INI.
+Versions are case-sensitive, 1–64 characters: letters, digits, dot, underscore,
+plus or hyphen, starting with a letter or digit. Older injectors reject schema 3
+and retain their last valid configuration.
+
+Component packages provide a schema-1 manifest.json with matching workshopId,
+version and copy-only/update/remove operations. The launcher verifies hashes and
+prepares runtime files before allowing Play. Ordinary content provides no custom
+manifest; it stays in Workshop and required content is admitted to the whitelist.
+Publish the component to Steam and verify availability before updating this feed's
+expected version. Never reuse a release version for changed payload bytes.
 
 - Empty lists declare no rules.
 - IDs must be positive uint64 values and unique within a list.
@@ -116,14 +125,17 @@ inventory refresh, and through Settings > Sync Workshop rules. `workshop.json`
 is authoritative for the local `$REQUIRED_WORKSHOP_ID` and
 `$INCOMPATIBLE_WORKSHOP_ID` lists: additions and removals replace the local sets;
 empty arrays clear them. Equal sets do not rewrite the INI. Other preferences,
-comments and the separate player whitelist are preserved. Failed requests,
+comments are preserved. Failed requests,
 invalid JSON or conflicting file edits retain the previous valid configuration.
 
-The development injector checks the required list against Steam subscriptions
-at startup, Workshop refresh and manual rule sync, subscribing to missing IDs.
-It checks Steam's asynchronous result and reports failures; subscription does
-not mean download/installation is complete. Removing a required ID does not
-unsubscribe it. Native whitelist selections and enable flags are separate.
+The development injector checks subscriptions and completed downloads at startup,
+Workshop refresh, preparation retry and before Play. It validates Steam's async
+subscription/download results and installed/current state. Exact component
+version mismatch requests one update per attempt, then blocks if unresolved.
+A configured feed that cannot be refreshed retains the INI but blocks preparation;
+an offline bypass is not defined. Required content is added to the whitelist,
+preserving its native enable flag and prior selections. Removing a required ID
+does not unsubscribe or deselect it. Native hooks remain disabled in development.
 News/update retrieval and incompatible-mod classification remain future work.
 
 This public static service does not accept uploads or store private settings.

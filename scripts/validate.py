@@ -49,9 +49,13 @@ def validate_workshop(rules):
                 "Workshop IDs must be positive uint64 decimal strings")
     required = set()
     for item in rules["requiredWorkshopIds"]:
-        require(type(item) is dict and set(item) == {"id", "type"}, "Required mod must contain exactly id and type")
+        require(type(item) is dict and "id" in item and "type" in item, "Required mod needs id and type")
         workshop_id(item["id"])
         require(item["type"] in ("component", "content"), "Required mod type must be component or content")
+        expected = {"id", "type", "version"} if item["type"] == "component" else {"id", "type"}
+        require(set(item) == expected, "Components require version; content has no custom version")
+        if item["type"] == "component":
+            require(type(item["version"]) is str and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._+\-]{0,63}", item["version"]), "Invalid component release version")
         require(item["id"] not in required, "Duplicate required Workshop ID")
         required.add(item["id"])
     incompatible = rules["incompatibleWorkshopIds"]
@@ -89,7 +93,7 @@ def validate():
         require(key not in channels, "Only one current release per component/channel")
         channels.add(key)
 
-    rules = read("workshop.json", ["requiredWorkshopIds", "incompatibleWorkshopIds"], version=2)
+    rules = read("workshop.json", ["requiredWorkshopIds", "incompatibleWorkshopIds"], version=3)
     validate_workshop(rules)
     print(f"Valid: {len(news['items'])} news items, {len(updates['releases'])} releases, "
           f"{len(rules['requiredWorkshopIds'])} required and {len(rules['incompatibleWorkshopIds'])} incompatible mods")

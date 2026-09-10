@@ -4,7 +4,7 @@ from validate import validate_workshop
 
 class WorkshopTypes(unittest.TestCase):
     def test_both_types(self):
-        validate_workshop({"requiredWorkshopIds": [{"id": "42", "type": "component"}, {"id": "43", "type": "content"}], "incompatibleWorkshopIds": ["99"]})
+        validate_workshop({"requiredWorkshopIds": [{"id": "42", "type": "component", "version": "1.0.0"}, {"id": "43", "type": "content"}], "incompatibleWorkshopIds": ["99"]})
         validate_workshop({"requiredWorkshopIds": [], "incompatibleWorkshopIds": []})
 
     def test_invalid_required_entries(self):
@@ -16,10 +16,16 @@ class WorkshopTypes(unittest.TestCase):
                 validate_workshop({"requiredWorkshopIds": [entry], "incompatibleWorkshopIds": []})
 
     def test_duplicates_and_overlap(self):
-        first = {"id": "42", "type": "component"}
+        first = {"id": "42", "type": "component", "version": "1.0.0"}
         for required, incompatible in [([first, first], []), ([first, {"id": "42", "type": "content"}], []), ([first], ["42"])]:
             with self.assertRaises(ValueError):
                 validate_workshop({"requiredWorkshopIds": required, "incompatibleWorkshopIds": incompatible})
+
+    def test_versions(self):
+        for item in [{"id": "42", "type": "component"}, {"id": "42", "type": "content", "version": "1"},
+                     *({"id": "42", "type": "component", "version": v} for v in [None, 1, "", "../bad", "x" * 65])]:
+            with self.subTest(item=item), self.assertRaises(ValueError):
+                validate_workshop({"requiredWorkshopIds": [item], "incompatibleWorkshopIds": []})
 
 
 if __name__ == "__main__":
