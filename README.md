@@ -99,7 +99,11 @@ empty arrays clear them. Equal sets do not rewrite the INI. Other preferences,
 comments and the separate player whitelist are preserved. Failed requests,
 invalid JSON or conflicting file edits retain the previous valid configuration.
 
-News/update retrieval, Workshop rule enforcement and UI classification remain
-future work. These feeds do not change Steam subscriptions.
+The development injector checks the required list against Steam subscriptions
+at startup, Workshop refresh and manual rule sync, subscribing to missing IDs.
+It checks Steam's asynchronous result and reports failures; subscription does
+not mean download/installation is complete. Removing a required ID does not
+unsubscribe it. Native whitelist selections and enable flags are separate.
+News/update retrieval and incompatible-mod classification remain future work.
 
 This public static service does not accept uploads or store private settings.
