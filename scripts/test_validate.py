@@ -1,5 +1,5 @@
 import unittest
-from validate import validate_workshop
+from validate import validate_workshop, validate_version
 
 
 class WorkshopTypes(unittest.TestCase):
@@ -26,6 +26,16 @@ class WorkshopTypes(unittest.TestCase):
                      *({"id": "42", "type": "component", "version": v} for v in [None, 1, "", "../bad", "x" * 65])]:
             with self.subTest(item=item), self.assertRaises(ValueError):
                 validate_workshop({"requiredWorkshopIds": [item], "incompatibleWorkshopIds": []})
+
+
+class InjectorVersion(unittest.TestCase):
+    def test_version_feed(self):
+        valid = {"schemaVersion": 1, "version": "0.1.0", "downloadUrl": "", "backupBackendUrl": "https://example.com/backend/"}
+        validate_version(valid)
+        validate_version({**valid, "downloadUrl": "https://example.com/injector.zip"})
+        for key, value in [("schemaVersion", True), ("schemaVersion", 2), ("version", ""), ("version", 1), ("downloadUrl", None), ("downloadUrl", "http://example.com/file"), ("downloadUrl", "https://example.com/file#fragment"), ("backupBackendUrl", "https://example.com/backend/?query"), ("backupBackendUrl", "//example.com/")]:
+            with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                validate_version({**valid, key: value})
 
 
 if __name__ == "__main__":

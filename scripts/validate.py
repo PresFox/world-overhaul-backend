@@ -65,6 +65,22 @@ def validate_workshop(rules):
     require(not required & set(incompatible), "A Workshop ID cannot be both required and incompatible")
 
 
+def validate_version(data):
+    require(type(data) is dict and set(data) == {"schemaVersion", "version", "downloadUrl", "backupBackendUrl"}, "Invalid version feed fields")
+    require(type(data["schemaVersion"]) is int and data["schemaVersion"] == 1, "Unsupported version feed schema")
+    require(type(data["version"]) is str and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._+\-]{0,63}", data["version"]), "Invalid injector version")
+    for key in ("downloadUrl", "backupBackendUrl"):
+        value = data[key]
+        require(type(value) is str, f"{key} must be a string")
+        if not value:
+            continue
+        https(value)
+        parsed = urlsplit(value)
+        require(len(value) <= 2048 and not parsed.fragment and not any(c in value for c in ('\\', '"', '#')) and not any(ord(c) < 32 or ord(c) == 127 for c in value), f"Invalid {key}")
+        if key == "backupBackendUrl":
+            require(not parsed.query and parsed.path.endswith('/'), "Backup backend must be a directory URL ending in /")
+
+
 def validate():
     news = read("news.json", ["items"])
     ids = set()
@@ -95,6 +111,9 @@ def validate():
 
     rules = read("workshop.json", ["requiredWorkshopIds", "incompatibleWorkshopIds"], version=3)
     validate_workshop(rules)
+    version_path = ROOT / "version.json"
+    require(version_path.stat().st_size <= 1024 * 1024, "Version feed exceeds 1 MiB")
+    validate_version(json.loads(version_path.read_text(encoding="utf-8"), object_pairs_hook=unique_keys))
     print(f"Valid: {len(news['items'])} news items, {len(updates['releases'])} releases, "
           f"{len(rules['requiredWorkshopIds'])} required and {len(rules['incompatibleWorkshopIds'])} incompatible mods")
 

@@ -11,6 +11,7 @@ game files, the injector source, mod binaries, credentials or tester reports.
 
 | Feed | URL |
 | --- | --- |
+| Injector version and backup backend | https://presfox.github.io/world-overhaul-backend/version.json |
 | News | https://presfox.github.io/world-overhaul-backend/news.json |
 | Updates | https://presfox.github.io/world-overhaul-backend/updates.json |
 | Workshop requirements and incompatibilities | https://presfox.github.io/world-overhaul-backend/workshop.json |
@@ -18,8 +19,20 @@ game files, the injector source, mod binaries, credentials or tester reports.
 The earlier `compatibility.json` URL remains a deployment-generated alias of
 `workshop.json`. Edit only `site/workshop.json` for Workshop rules.
 
-Workshop rules use `schemaVersion: 3`; news and updates remain version 1. Initial arrays are deliberately empty: there
-are no announced releases or active Workshop rules in this initial deployment.
+Workshop rules use `schemaVersion: 3`; the other feeds use version 1. Three Workshop
+items are required. No injector download has been published yet.
+
+`version.json` contains `schemaVersion`, `version`, `downloadUrl` and
+`backupBackendUrl`. The current injector version is `0.1.0`; an empty download URL
+means no downloadable release is advertised. Set it to the actual HTTPS release
+asset URL when published. The backup is an HTTPS backend directory ending in `/`,
+currently the raw GitHub `main/site/` directory. It is not an alternative download.
+The injector saves validated values in injector.ini as `$LATEST_INJECTOR_VERSION`,
+`$INJECTOR_DOWNLOAD_URL` and `$BACKUP_BACKEND_URL`. Failed refreshes retain previous
+metadata. Version and Workshop requests try the configured backup if the primary
+fails or returns invalid data; cancellation does not trigger fallback. The raw
+backup shares GitHub infrastructure, so it is not an independent hosting provider.
+This is discovery metadata only; it does not trigger an executable update.
 
 ## Editing and publishing
 
@@ -115,9 +128,11 @@ expected version. Never reuse a release version for changed payload bytes.
 The local launcher INI can point to these feeds:
 
 ```ini
-$NEWS_URL "https://presfox.github.io/world-overhaul-backend/news.json"
-$UPDATES_URL "https://presfox.github.io/world-overhaul-backend/updates.json"
-$COMPATIBILITY_URL "https://presfox.github.io/world-overhaul-backend/workshop.json"
+$BACKEND_URL "https://presfox.github.io/world-overhaul-backend/"
+$VERSION_URL "version.json"
+$NEWS_URL "news.json"
+$UPDATES_URL "updates.json"
+$COMPATIBILITY_URL "workshop.json"
 ```
 
 The injector synchronises Workshop rules at startup, during a successful Steam
