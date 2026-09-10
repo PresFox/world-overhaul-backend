@@ -3,7 +3,7 @@ import json
 import re
 from datetime import datetime
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, unquote
 
 ROOT = Path(__file__).resolve().parents[1] / "site"
 
@@ -66,7 +66,7 @@ def validate_workshop(rules):
 
 
 def validate_version(data):
-    require(type(data) is dict and set(data) == {"schemaVersion", "version", "downloadUrl", "backupBackendUrl"}, "Invalid version feed fields")
+    require(type(data) is dict and set(data) - {"banner"} == {"schemaVersion", "version", "downloadUrl", "backupBackendUrl"}, "Invalid version feed fields")
     require(type(data["schemaVersion"]) is int and data["schemaVersion"] == 1, "Unsupported version feed schema")
     require(type(data["version"]) is str and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._+\-]{0,63}", data["version"]), "Invalid injector version")
     for key in ("downloadUrl", "backupBackendUrl"):
@@ -79,6 +79,26 @@ def validate_version(data):
         require(len(value) <= 2048 and not parsed.fragment and not any(c in value for c in ('\\', '"', '#')) and not any(ord(c) < 32 or ord(c) == 127 for c in value), f"Invalid {key}")
         if key == "backupBackendUrl":
             require(not parsed.query and parsed.path.endswith('/'), "Backup backend must be a directory URL ending in /")
+    if "banner" in data:
+        banner = data["banner"]
+        require(type(banner) is dict and set(banner) == {"enabled", "img", "href", "height"}, "Invalid banner fields")
+        require(type(banner["enabled"]) is bool, "Banner enabled must be boolean")
+        require(type(banner["height"]) is int and 0 <= banner["height"] <= 800, "Banner height must be 0..800")
+        for key in ("img", "href"):
+            value = banner[key]
+            require(type(value) is str and len(value) <= 2048, "Invalid banner URL")
+            if not value:
+                continue
+            parsed = urlsplit(value)
+            if parsed.scheme:
+                https(value)
+                require(not parsed.fragment and not any(c in value for c in ('\\', '"', '#'))
+                        and not any(ord(c) < 32 or ord(c) == 127 for c in value), "Invalid banner URL")
+            else:
+                decoded = unquote(value)
+                require(not decoded.startswith('/') and not any(c.isspace() or ord(c) < 32 or ord(c) == 127 or c in '\\":#' for c in decoded)
+                        and not any(p in ('.', '..') for p in decoded.split('?', 1)[0].split('/')), "Invalid relative banner URL")
+        require(not banner["enabled"] or bool(banner["img"]), "Enabled banner requires an image")
 
 
 def validate():

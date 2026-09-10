@@ -2,5 +2,11 @@
   "schemaVersion": 1,
   "version": "0.1.0",
   "downloadUrl": "",
-  "backupBackendUrl": "https://raw.githubusercontent.com/PresFox/world-overhaul-backend/main/site/"
+  "backupBackendUrl": "https://raw.githubusercontent.com/PresFox/world-overhaul-backend/main/site/",
+  "banner": {
+    "enabled": false,
+    "img": "",
+    "href": "",
+    "height": 0
+  }
 }

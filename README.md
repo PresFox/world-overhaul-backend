@@ -34,6 +34,23 @@ fails or returns invalid data; cancellation does not trigger fallback. The raw
 backup shares GitHub infrastructure, so it is not an independent hosting provider.
 This is discovery metadata only; it does not trigger an executable update.
 
+The optional `banner` object reserves a future clickable image banner:
+
+```json
+"banner": {
+  "enabled": false,
+  "img": "",
+  "href": "",
+  "height": 0
+}
+```
+
+It is disabled for now. The launcher accepts and validates this metadata; image
+rendering and click handling are not implemented yet. `img` and `href` accept
+HTTPS URLs or relative backend paths. `height` accepts 0–800 logical pixels;
+0 reserves automatic sizing from the image aspect ratio. An enabled banner
+requires a nonempty image URL. Older feeds without `banner` remain accepted.
+
 ## Editing and publishing
 
 1. Edit the appropriate file under `site/`, either on GitHub or locally.

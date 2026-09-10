@@ -29,6 +29,15 @@ class WorkshopTypes(unittest.TestCase):
 
 
 class InjectorVersion(unittest.TestCase):
+    def test_banner(self):
+        valid = {"schemaVersion": 1, "version": "0.1.0", "downloadUrl": "", "backupBackendUrl": ""}
+        banner = {"enabled": False, "img": "", "href": "", "height": 0}
+        validate_version({**valid, "banner": banner})
+        validate_version({**valid, "banner": {**banner, "enabled": True, "img": "images/banner.png", "href": "https://example.com/news", "height": 160}})
+        for key, value in [("enabled", "false"), ("enabled", True), ("height", "0"), ("height", True), ("height", 801), ("img", "../image.png"), ("href", "http://example.com")]:
+            with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                validate_version({**valid, "banner": {**banner, key: value}})
+
     def test_version_feed(self):
         valid = {"schemaVersion": 1, "version": "0.1.0", "downloadUrl": "", "backupBackendUrl": "https://example.com/backend/"}
         validate_version(valid)
