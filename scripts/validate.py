@@ -21,12 +21,12 @@ def unique_keys(pairs):
     return result
 
 
-def read(name, keys):
+def read(name, keys, version=1):
     path = ROOT / name
     require(path.stat().st_size <= 1024 * 1024, f"{name} exceeds 1 MiB")
     data = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=unique_keys)
     require(type(data) is dict and set(data) == {"schemaVersion", *keys}, f"Unexpected fields in {name}")
-    require(type(data["schemaVersion"]) is int and data["schemaVersion"] == 1, f"Unsupported schema in {name}")
+    require(type(data["schemaVersion"]) is int and data["schemaVersion"] == version, f"Unsupported schema in {name}")
     for key in keys:
         require(type(data[key]) is list, f"{name}: {key} must be an array")
     return data
@@ -41,6 +41,24 @@ def https(value):
     parsed = urlsplit(value)
     require(parsed.scheme == "https" and parsed.hostname and not parsed.username and not parsed.password
             and not any(c.isspace() for c in value), "Expected a public HTTPS URL without credentials")
+
+
+def validate_workshop(rules):
+    def workshop_id(value):
+        require(type(value) is str and re.fullmatch(r"[1-9][0-9]*", value) and int(value) <= 18446744073709551615,
+                "Workshop IDs must be positive uint64 decimal strings")
+    required = set()
+    for item in rules["requiredWorkshopIds"]:
+        require(type(item) is dict and set(item) == {"id", "type"}, "Required mod must contain exactly id and type")
+        workshop_id(item["id"])
+        require(item["type"] in ("component", "content"), "Required mod type must be component or content")
+        require(item["id"] not in required, "Duplicate required Workshop ID")
+        required.add(item["id"])
+    incompatible = rules["incompatibleWorkshopIds"]
+    for value in incompatible:
+        workshop_id(value)
+    require(len(incompatible) == len(set(incompatible)), "Duplicate incompatible Workshop ID")
+    require(not required & set(incompatible), "A Workshop ID cannot be both required and incompatible")
 
 
 def validate():
@@ -71,14 +89,8 @@ def validate():
         require(key not in channels, "Only one current release per component/channel")
         channels.add(key)
 
-    rules = read("workshop.json", ["requiredWorkshopIds", "incompatibleWorkshopIds"])
-    for key in ["requiredWorkshopIds", "incompatibleWorkshopIds"]:
-        for value in rules[key]:
-            require(type(value) is str and re.fullmatch(r"[1-9][0-9]*", value) and int(value) <= 18446744073709551615,
-                    f"{key}: Workshop IDs must be positive uint64 decimal strings")
-        require(len(rules[key]) == len(set(rules[key])), f"Duplicate ID in {key}")
-    require(not set(rules["requiredWorkshopIds"]) & set(rules["incompatibleWorkshopIds"]),
-            "A Workshop ID cannot be both required and incompatible")
+    rules = read("workshop.json", ["requiredWorkshopIds", "incompatibleWorkshopIds"], version=2)
+    validate_workshop(rules)
     print(f"Valid: {len(news['items'])} news items, {len(updates['releases'])} releases, "
           f"{len(rules['requiredWorkshopIds'])} required and {len(rules['incompatibleWorkshopIds'])} incompatible mods")
 

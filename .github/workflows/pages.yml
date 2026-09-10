@@ -23,6 +23,8 @@ jobs:
           persist-credentials: false
       - name: Validate JSON feeds
         run: python3 scripts/validate.py
+      - name: Test Workshop type validation
+        run: python3 scripts/test_validate.py
       - name: Preserve the earlier feed URL as an alias
         run: cp site/workshop.json site/compatibility.json
       - name: Configure Pages

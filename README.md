@@ -18,7 +18,7 @@ game files, the injector source, mod binaries, credentials or tester reports.
 The earlier `compatibility.json` URL remains a deployment-generated alias of
 `workshop.json`. Edit only `site/workshop.json` for Workshop rules.
 
-All feeds use `schemaVersion: 1`. Initial arrays are deliberately empty: there
+Workshop rules use `schemaVersion: 2`; news and updates remain version 1. Initial arrays are deliberately empty: there
 are no announced releases or active Workshop rules in this initial deployment.
 
 ## Editing and publishing
@@ -72,8 +72,28 @@ integrity verification must remain in the installer/updater implementation.
 ## Workshop compatibility contract
 
 `workshop.json` contains `schemaVersion`, `requiredWorkshopIds` and
-`incompatibleWorkshopIds`. Both lists contain **decimal strings**, for example
-`"123456789"`, preserving uint64 precision across JSON consumers.
+`incompatibleWorkshopIds`. Required entries contain an `id` and a `type` of
+exactly `"component"` or `"content"`. IDs remain **decimal strings**, preserving
+uint64 precision. Incompatible entries remain ID strings. For example (illustrative IDs only):
+
+```json
+{
+  "schemaVersion": 2,
+  "requiredWorkshopIds": [
+    {"id": "123456789", "type": "component"},
+    {"id": "234567890", "type": "content"}
+  ],
+  "incompatibleWorkshopIds": []
+}
+```
+
+The injector preserves types as `$REQUIRED_WORKSHOP_ID 123456789 COMPONENT`
+or `$REQUIRED_WORKSHOP_ID 234567890 CONTENT` in `WorldOverhaul/injector.ini`.
+Legacy local entries without a type are read as CONTENT. Schema 2 JSON always
+requires an explicit type; invalid/missing types reject the complete update.
+A type-only change updates the INI. Both types use the same subscription check;
+this metadata does not yet change installation/copying or whitelist behavior.
+Older injectors reject schema 2 and retain their last valid configuration.
 
 - Empty lists declare no rules.
 - IDs must be positive uint64 values and unique within a list.
