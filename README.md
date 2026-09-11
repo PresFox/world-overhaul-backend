@@ -34,6 +34,11 @@ fails or returns invalid data; cancellation does not trigger fallback. The raw
 backup shares GitHub infrastructure, so it is not an independent hosting provider.
 This is discovery metadata only; it does not trigger an executable update.
 
+The optional `Bughook` string contains the configured HTTPS bug-report webhook.
+It is public feed data, published with the owner's explicit approval. This field
+alone does not send reports; launcher report submission is not implemented.
+An empty value or absent field means no endpoint configured.
+
 The optional `banner` object reserves a future clickable image banner:
 
 ```json

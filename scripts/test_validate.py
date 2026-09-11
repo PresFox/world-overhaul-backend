@@ -29,6 +29,14 @@ class WorkshopTypes(unittest.TestCase):
 
 
 class InjectorVersion(unittest.TestCase):
+    def test_bughook(self):
+        valid = {"schemaVersion": 1, "version": "0.1.0", "downloadUrl": "", "backupBackendUrl": ""}
+        for value in ("", "https://discord.com/api/webhooks/123/fixture"):
+            validate_version({**valid, "Bughook": value})
+        for value in (None, 42, "http://example.com/hook"):
+            with self.assertRaises(ValueError):
+                validate_version({**valid, "Bughook": value})
+
     def test_banner(self):
         valid = {"schemaVersion": 1, "version": "0.1.0", "downloadUrl": "", "backupBackendUrl": ""}
         banner = {"enabled": False, "img": "", "href": "", "height": 0}

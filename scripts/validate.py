@@ -66,11 +66,11 @@ def validate_workshop(rules):
 
 
 def validate_version(data):
-    require(type(data) is dict and set(data) - {"banner"} == {"schemaVersion", "version", "downloadUrl", "backupBackendUrl"}, "Invalid version feed fields")
+    require(type(data) is dict and set(data) - {"banner", "Bughook"} == {"schemaVersion", "version", "downloadUrl", "backupBackendUrl"}, "Invalid version feed fields")
     require(type(data["schemaVersion"]) is int and data["schemaVersion"] == 1, "Unsupported version feed schema")
     require(type(data["version"]) is str and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._+\-]{0,63}", data["version"]), "Invalid injector version")
-    for key in ("downloadUrl", "backupBackendUrl"):
-        value = data[key]
+    for key in ("downloadUrl", "backupBackendUrl", "Bughook"):
+        value = data.get(key, "")
         require(type(value) is str, f"{key} must be a string")
         if not value:
             continue
