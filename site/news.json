@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260911T142124Z-2d9e6b5a",
+      "title": "Alpha update via the releaser",
+      "publishedAt": "2026-09-11T14:21:24.069806+00:00",
+      "summary": "This is the first full official release, build with a tool to make everything work together, let's hope that it works!"
+    },
+    {
       "id": "pre-alpha-testing-begins",
       "title": "WorldOverhaul pre-alpha testing begins",
       "publishedAt": "2026-09-11T11:15:00Z",

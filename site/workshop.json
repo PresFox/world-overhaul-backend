@@ -1,9 +1,19 @@
 {
   "schemaVersion": 3,
   "requiredWorkshopIds": [
-    { "id": "3799262663", "type": "component", "version": "0.1.0" },
-    { "id": "3799261259", "type": "content" },
-    { "id": "3799259914", "type": "content" }
+    {
+      "id": "3799262663",
+      "type": "component",
+      "version": "0.1.1"
+    },
+    {
+      "id": "3799261259",
+      "type": "content"
+    },
+    {
+      "id": "3799259914",
+      "type": "content"
+    }
   ],
   "incompatibleWorkshopIds": []
 }
