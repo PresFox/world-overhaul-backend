@@ -10,6 +10,12 @@ import subprocess
 import tempfile
 
 MAKESELF_COMMIT = '3815292f7359a4ccab8e27bdbe8a844947c51e4c'
+START_SCRIPT = '''#!/usr/bin/env bash
+set -eu
+bundle_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+cd -- "${USER_PWD:-$PWD}"
+exec bash "$bundle_dir/install-linux.sh" "$@"
+'''
 
 
 def require(condition, message):
@@ -74,12 +80,15 @@ def package(values, makeself):
         text = helper.read_text(encoding='utf-8')
         require(values['installer_name'] in text and values['msi_sha256'] in text, 'Helper is not bound to this MSI')
         require('\r' not in helper.read_bytes().decode('utf-8') and not text.startswith('\ufeff'), 'Helper must use LF and no BOM')
+        # Makeself changes cwd to extraction. Restore the user's original cwd
+        # for relative --game/--msi arguments, retaining the absolute helper path.
+        (payload / 'start.sh').write_text(START_SCRIPT, encoding='utf-8', newline='\n')
         bundle = root / bundle_name
         # Tests/extraction do not receive the token used to access release assets.
         clean_env = {key: value for key, value in os.environ.items()
                      if key not in ('GH_TOKEN', 'GITHUB_TOKEN') and not key.startswith('ACTIONS_')}
         print(run('bash', makeself, '--nocomp', '--sha256', '--nomd5', '--nocrc', '--nox11', '--nowait',
-                  '--tar-format', 'ustar', payload, bundle, 'WorldOverhaul Linux setup', 'bash', './install-linux.sh', env=clean_env))
+                  '--tar-format', 'ustar', payload, bundle, 'WorldOverhaul Linux setup', 'bash', './start.sh', env=clean_env))
         print(run('bash', bundle, '--check', env=clean_env))
         damaged = root / 'damaged.run'; shutil.copyfile(bundle, damaged)
         with damaged.open('r+b') as stream:
@@ -92,7 +101,8 @@ def package(values, makeself):
             raise ValueError('Corrupted bundle unexpectedly passed its integrity check')
         extracted = root / 'extracted'
         run('bash', bundle, '--noexec', '--target', extracted, env=clean_env)
-        require(sorted(p.name for p in extracted.iterdir()) == sorted((msi.name, helper.name)), 'Unexpected bundle contents')
+        require(sorted(p.name for p in extracted.iterdir()) == sorted((msi.name, helper.name, 'start.sh')), 'Unexpected bundle contents')
+        require((extracted / 'start.sh').read_text(encoding='utf-8') == START_SCRIPT, 'Extracted startup script differs')
         for source in (msi, helper):
             require(sha256(extracted / source.name) == sha256(source), 'Extracted bytes differ: ' + source.name)
         # Exercise the real entry point/argument forwarding without setup, Steam or Wine.

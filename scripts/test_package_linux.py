@@ -1,5 +1,11 @@
 import unittest
-from package_linux import validate_inputs, validate_release
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import tempfile
+from package_linux import START_SCRIPT, validate_inputs, validate_release
 
 
 class PackageTests(unittest.TestCase):
@@ -27,6 +33,24 @@ class PackageTests(unittest.TestCase):
     def test_isolated_validation_tag(self):
         self.values['release_tag'] = 'linux-package-test-' + 'd'*32
         self.assertEqual(validate_inputs(self.values), 'WorldOverhaul-0.1.4-linux.run')
+
+    @unittest.skipUnless(os.name == 'posix' and shutil.which('bash'), 'Linux startup behavior')
+    def test_startup_preserves_cwd_arguments_and_exit_status(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); bundle = root/'extracted files'; bundle.mkdir()
+            original = root/'original directory'; original.mkdir()
+            (bundle/'start.sh').write_text(START_SCRIPT)
+            (bundle/'install-linux.sh').write_text('''#!/usr/bin/env bash
+python3 - "$@" <<'PY'
+import json, os, sys
+print(json.dumps([os.getcwd(), sys.argv[1:]]))
+PY
+exit 7
+''')
+            result = subprocess.run(['bash', str(bundle/'start.sh'), '--game', './folder with spaces/SOVIET64.exe'],
+                                    cwd=bundle, env=dict(os.environ, USER_PWD=str(original)), text=True, capture_output=True)
+            self.assertEqual(result.returncode, 7)
+            self.assertEqual(json.loads(result.stdout), [str(original), ['--game', './folder with spaces/SOVIET64.exe']])
 
 
 if __name__ == '__main__':
