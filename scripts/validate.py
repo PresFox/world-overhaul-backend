@@ -66,11 +66,27 @@ def validate_workshop(rules):
 
 
 def validate_version(data):
-    require(type(data) is dict and set(data) - {"banner", "Bughook"} == {"schemaVersion", "version", "downloadUrl", "backupBackendUrl"}, "Invalid version feed fields")
-    require(type(data["schemaVersion"]) is int and data["schemaVersion"] == 1, "Unsupported version feed schema")
-    require(type(data["version"]) is str and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._+\-]{0,63}", data["version"]), "Invalid injector version")
-    for key in ("downloadUrl", "backupBackendUrl", "Bughook"):
-        value = data.get(key, "")
+    require(type(data) is dict, "Invalid version feed")
+    schema = data.get("schemaVersion")
+    require(type(schema) is int and schema in (1, 2), "Unsupported version feed schema")
+    expected = ({"schemaVersion", "version", "downloadUrl", "backupBackendUrl"} if schema == 1 else
+                {"schemaVersion", "injector", "loader", "workshopManager", "releaseUrl", "backupBackendUrl"})
+    require(set(data) - {"banner", "Bughook"} == expected, "Invalid version feed fields")
+    urls = [(key, data.get(key, "")) for key in ("backupBackendUrl", "Bughook")]
+    if schema == 1:
+        require(type(data["version"]) is str and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._+\-]{0,63}", data["version"]), "Invalid injector version")
+        urls.append(("downloadUrl", data["downloadUrl"]))
+    else:
+        for name in ("injector", "loader", "workshopManager"):
+            file = data[name]
+            require(type(file) is dict and set(file) == {"version", "downloadUrl"}, "Invalid file release fields")
+            version = file["version"]
+            require(type(version) is str and re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:\.[0-9]+)?", version)
+                    and all(int(part) <= 2147483647 for part in version.split('.')), "Expected numeric file version")
+            urls.append((name + " downloadUrl", file["downloadUrl"]))
+        text(data["releaseUrl"], "releaseUrl")
+        urls.append(("releaseUrl", data["releaseUrl"]))
+    for key, value in urls:
         require(type(value) is str, f"{key} must be a string")
         if not value:
             continue

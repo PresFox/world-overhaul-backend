@@ -1,7 +1,5 @@
 {
-  "schemaVersion": 1,
-  "version": "0.1.0",
-  "downloadUrl": "",
+  "schemaVersion": 2,
   "backupBackendUrl": "https://raw.githubusercontent.com/PresFox/world-overhaul-backend/main/site/",
   "banner": {
     "enabled": false,
@@ -9,5 +7,18 @@
     "href": "",
     "height": 0
   },
-  "Bughook": "https://discord.com/api/webhooks/1547910968732815480/FkkV162QFRUDe7w1C-ohh3ra_i4FhDV8DtesJBLW_WoGEgTT1SKA51yHJ99sp3HVuHv7"
+  "Bughook": "https://discord.com/api/webhooks/1547910968732815480/FkkV162QFRUDe7w1C-ohh3ra_i4FhDV8DtesJBLW_WoGEgTT1SKA51yHJ99sp3HVuHv7",
+  "injector": {
+    "version": "0.1.0",
+    "downloadUrl": ""
+  },
+  "loader": {
+    "version": "0.1.0",
+    "downloadUrl": ""
+  },
+  "workshopManager": {
+    "version": "0.1.0",
+    "downloadUrl": ""
+  },
+  "releaseUrl": "https://github.com/PresFox/world-overhaul-backend/releases"
 }

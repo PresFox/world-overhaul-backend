@@ -19,13 +19,27 @@ game files, the injector source, mod binaries, credentials or tester reports.
 The earlier `compatibility.json` URL remains a deployment-generated alias of
 `workshop.json`. Edit only `site/workshop.json` for Workshop rules.
 
-Workshop rules use `schemaVersion: 3`; the other feeds use version 1. Three Workshop
-items are required. No injector download has been published yet.
+Workshop rules use `schemaVersion: 3`; version.json uses schema 2; other feeds use schema 1.
+Three Workshop items are required. No injector installer or separate DLL downloads have been published yet.
 
-`version.json` contains `schemaVersion`, `version`, `downloadUrl` and
-`backupBackendUrl`. The current injector version is `0.1.0`; an empty download URL
-means no downloadable release is advertised. Set it to the actual HTTPS release
-asset URL when published. The backup is an HTTPS backend directory ending in `/`,
+`version.json` tracks `injector`, `loader`, and `workshopManager` separately.
+Each entry has `version` (three or four numeric parts) and `downloadUrl` (HTTPS,
+or empty until the corresponding artifact exists). All three currently start at `0.1.0`.
+`releaseUrl` is the shared HTTPS releases page opened after the user accepts an update
+notification. It currently points to this repository's GitHub Releases page.
+Only bump versions for artifacts actually published. The future releaser must update
+injector project version / Loader loader.rc / Workshop Manager workshop_manager.rc
+along with the corresponding feed entry. DLL versions are read from file resources;
+missing or unversioned files are not guessed to be older releases.
+
+The injector accepts both legacy schema 1 and schema 2. Schema 1-only older clients
+cannot read the new feed and need a manual launcher update. Notifications use fresh
+schema 2 data, compare numeric versions, and appear at most once per session after
+preparation finishes. No automatic artifact download, replacement or execution occurs.
+The existing injector version/download and backup INI cache remains supported;
+DLL release information is used directly from the fetched feed.
+
+The backup is an HTTPS backend directory ending in `/`,
 currently the raw GitHub `main/site/` directory. It is not an alternative download.
 The injector saves validated values in injector.ini as `$LATEST_INJECTOR_VERSION`,
 `$INJECTOR_DOWNLOAD_URL` and `$BACKUP_BACKEND_URL`. Failed refreshes retain previous

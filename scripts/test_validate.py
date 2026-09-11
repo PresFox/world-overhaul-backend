@@ -29,6 +29,21 @@ class WorkshopTypes(unittest.TestCase):
 
 
 class InjectorVersion(unittest.TestCase):
+    def test_separate_file_versions(self):
+        import copy
+        valid = {"schemaVersion": 2, "releaseUrl": "https://github.com/PresFox/world-overhaul-backend/releases", "backupBackendUrl": "",
+                 **{name: {"version": "0.1.0", "downloadUrl": ""} for name in ("injector", "loader", "workshopManager")}}
+        validate_version(valid)
+        for key in ("injector", "loader", "workshopManager"):
+            for field, value in (("version", "latest"), ("version", "1.0"), ("version", "2147483648.0.0"), ("downloadUrl", "http://example.com/file"), ("downloadUrl", None)):
+                bad = copy.deepcopy(valid); bad[key][field] = value
+                with self.subTest(key=key, field=field, value=value), self.assertRaises(ValueError):
+                    validate_version(bad)
+            bad = copy.deepcopy(valid); del bad[key]
+            with self.assertRaises(ValueError): validate_version(bad)
+        with self.assertRaises(ValueError): validate_version({**valid, "releaseUrl": ""})
+        with self.assertRaises(ValueError): validate_version({**valid, "releaseUrl": "http://example.com"})
+
     def test_bughook(self):
         valid = {"schemaVersion": 1, "version": "0.1.0", "downloadUrl": "", "backupBackendUrl": ""}
         for value in ("", "https://discord.com/api/webhooks/123/fixture"):
