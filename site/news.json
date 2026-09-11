@@ -1,30 +1,7 @@
 {
   "schemaVersion": 1,
   "items": [
-    {
-      "id": "release-20260911T190755Z-680bccf3",
-      "title": "New windows and linux launchers",
-      "publishedAt": "2026-09-11T19:07:55.021531+00:00",
-      "summary": "These should work better"
-    },
-    {
-      "id": "release-20260911T155257Z-65b2da7e",
-      "title": "Hotfix 1",
-      "publishedAt": "2026-09-11T15:52:57.457586+00:00",
-      "summary": "Yes, that was fast!"
-    },
-    {
-      "id": "release-20260911T144939Z-debea9bd",
-      "title": "Small update to the installer",
-      "publishedAt": "2026-09-11T14:49:39.914098+00:00",
-      "summary": "This is the first full official release, build with a tool to make everything work together, let's hope that it works!"
-    },
-    {
-      "id": "release-20260911T142124Z-2d9e6b5a",
-      "title": "Alpha update via the releaser",
-      "publishedAt": "2026-09-11T14:21:24.069806+00:00",
-      "summary": "This is the first full official release, build with a tool to make everything work together, let's hope that it works!"
-    },
+    
     {
       "id": "pre-alpha-testing-begins",
       "title": "WorldOverhaul pre-alpha testing begins",
