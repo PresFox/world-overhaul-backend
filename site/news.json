@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260911T144939Z-debea9bd",
+      "title": "Small update to the installer",
+      "publishedAt": "2026-09-11T14:49:39.914098+00:00",
+      "summary": "This is the first full official release, build with a tool to make everything work together, let's hope that it works!"
+    },
+    {
       "id": "release-20260911T142124Z-2d9e6b5a",
       "title": "Alpha update via the releaser",
       "publishedAt": "2026-09-11T14:21:24.069806+00:00",
