@@ -1,0 +1,66 @@
+name: Package Linux installer
+run-name: Linux package ${{ inputs.request_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing draft release tag
+        type: string
+        required: true
+      installer_name:
+        description: Exact versioned MSI asset name
+        type: string
+        required: true
+      msi_sha256:
+        description: SHA256 of the Windows-built MSI
+        type: string
+        required: true
+      helper_sha256:
+        description: SHA256 of the matching install-linux.sh
+        type: string
+        required: true
+      request_id:
+        description: Packaging request UUID without separators
+        type: string
+        required: true
+      release_marker:
+        description: Releaser journal ID recorded in the draft body
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: linux-package-${{ inputs.release_tag }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Check out pinned Makeself 2.7.1
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: megastep/makeself
+          ref: 3815292f7359a4ccab8e27bdbe8a844947c51e4c
+          path: .makeself
+          persist-credentials: false
+      - name: Test packaging contract
+        run: python3 -m unittest discover -s scripts -p test_package_linux.py -v
+      - name: Build, extract and verify Linux bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_RELEASE_TAG: ${{ inputs.release_tag }}
+          PACKAGE_INSTALLER_NAME: ${{ inputs.installer_name }}
+          PACKAGE_MSI_SHA256: ${{ inputs.msi_sha256 }}
+          PACKAGE_HELPER_SHA256: ${{ inputs.helper_sha256 }}
+          PACKAGE_REQUEST_ID: ${{ inputs.request_id }}
+          PACKAGE_RELEASE_MARKER: ${{ inputs.release_marker }}
+        run: python3 scripts/package_linux.py --makeself .makeself/makeself.sh

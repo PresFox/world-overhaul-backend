@@ -3,9 +3,35 @@
 Public news, update information and Workshop compatibility data for the World
 Overhaul launcher for **Workers & Resources: Soviet Republic**.
 
-GitHub Pages publishes the contents of `site/`. This repository contains only
-the public feed files, their validation and documentation. It does not contain
-game files, the injector source, mod binaries, credentials or tester reports.
+GitHub Pages publishes the contents of `site/`. This repository contains the
+public feeds, their validation/documentation and the Linux release packaging
+workflow. Installer binaries are release assets, not repository content.
+
+## Linux installer packaging
+
+`package-linux.yml` runs on Ubuntu 24.04 through an explicit `workflow_dispatch`
+from the Windows Releaser. It downloads the MSI and matching `install-linux.sh`
+from that job's draft release, checks the supplied SHA256 values and wraps them
+with Makeself 2.7.1 pinned to commit 3815292f7359a4ccab8e27bdbe8a844947c51e4c.
+It tests the archive checksum (including corruption rejection), exact extracted
+bytes and the real `--help` entry point. It does not install the MSI, run Steam,
+launch the game, or publish the draft.
+
+The job attaches `WorldOverhaul-<version>-linux.run` and an internal manifest.
+The Releaser binds that manifest to the request ID, workflow commit/run/attempt
+and original input hashes, downloads and verifies the bundle, removes the helper
+and manifest from the draft, then publishes only the MSI and `.run`. Failures
+leave the draft unpublished; Retry resumes an active run or reruns a failed one.
+This packaging job uses `contents: write` with its repository-scoped
+`GITHUB_TOKEN`. The local publisher needs Actions access through its existing
+GitHub CLI login. Workflow code must be installed on `main`.
+
+Linux players run `bash WorldOverhaul-<version>-linux.run`. Advanced helper
+arguments go after Makeself's separator, for example
+`bash WorldOverhaul-<version>-linux.run -- --terminal` or `-- --uninstall`.
+Uninstall uses the bundle for the installed MSI version. Python 3.8+ and the
+selected Wine/Proton environment are still required. Packaging tests do not
+establish live Wine/Proton compatibility.
 
 ## Endpoints
 
