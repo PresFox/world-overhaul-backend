@@ -76,8 +76,16 @@ site deployed. Only the `site/` directory goes into the Pages artifact.
 - `id`: stable, unique text identifier.
 - `title`: headline.
 - `publishedAt`: ISO 8601 timestamp including timezone.
-- `summary`: plain text for the launcher news card.
+- `summary`: full plain-text body for the launcher news card. Use `\n\n` between paragraphs.
 - Optional `articleUrl` and `imageUrl`: absolute HTTPS URLs.
+
+Home displays the title, local publication date and full body below its banner,
+newest first, with a separate bordered card for each post. The current launcher
+does not render the optional article/image fields. Refresh news reloads this
+feed using the configured primary and backup backend; a failed refresh retains
+posts already loaded during that launcher session and does not block Play.
+Launcher limits: 100 posts, 120 characters per ID, 200 per title, 20,000 per body,
+and 1 MiB total feed size. Dates must include time and timezone.
 
 Example item (illustrative, not published):
 

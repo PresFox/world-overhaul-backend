@@ -1,4 +1,11 @@
 {
   "schemaVersion": 1,
-  "items": []
+  "items": [
+    {
+      "id": "pre-alpha-testing-begins",
+      "title": "WorldOverhaul pre-alpha testing begins",
+      "publishedAt": "2026-09-11T11:15:00Z",
+      "summary": "Welcome to the WorldOverhaul pre-alpha test phase! We are opening up this early build to test the launcher, components and their integration with Workers & Resources: Soviet Republic.\n\nThis is an unfinished development build. Many functions may not work properly yet, some features are incomplete, and you may encounter crashes, visual issues or unexpected behaviour. Updates may change how components and settings work. Please use a separate test installation and back up any saves you care about.\n\nIf something goes wrong, use the launcher's Bug report page. Tell us what happened, what you expected, and how to reproduce the issue. Screenshots and the included game logs help us investigate.\n\nThank you for helping us test WorldOverhaul and shape its development!"
+    }
+  ]
 }
