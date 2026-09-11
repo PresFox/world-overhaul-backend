@@ -9,16 +9,16 @@
   },
   "Bughook": "https://discord.com/api/webhooks/1547910968732815480/FkkV162QFRUDe7w1C-ohh3ra_i4FhDV8DtesJBLW_WoGEgTT1SKA51yHJ99sp3HVuHv7",
   "injector": {
-    "version": "0.1.2",
-    "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-v0.1.2/WorldOverhaul-0.1.2-win-x64.msi"
+    "version": "0.1.3",
+    "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-v0.1.3/WorldOverhaul-0.1.3-win-x64.msi"
   },
   "loader": {
-    "version": "0.1.1",
-    "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-v0.1.1/WorldOverhaulLoader.dll"
+    "version": "0.1.2",
+    "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-v0.1.3/WorldOverhaul-0.1.3-win-x64.msi"
   },
   "workshopManager": {
-    "version": "0.1.1",
-    "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-v0.1.1/workshopManager.dll"
+    "version": "0.1.2",
+    "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-v0.1.3/WorldOverhaul-0.1.3-win-x64.msi"
   },
-  "releaseUrl": "https://github.com/PresFox/world-overhaul-backend/releases/tag/launcher-v0.1.2"
+  "releaseUrl": "https://github.com/PresFox/world-overhaul-backend/releases/tag/launcher-v0.1.3"
 }

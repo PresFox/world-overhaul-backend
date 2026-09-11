@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260911T155257Z-65b2da7e",
+      "title": "Hotfix 1",
+      "publishedAt": "2026-09-11T15:52:57.457586+00:00",
+      "summary": "Yes, that was fast!"
+    },
+    {
       "id": "release-20260911T144939Z-debea9bd",
       "title": "Small update to the installer",
       "publishedAt": "2026-09-11T14:49:39.914098+00:00",
