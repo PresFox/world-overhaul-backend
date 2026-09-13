@@ -1,7 +1,12 @@
 {
   "schemaVersion": 1,
   "items": [
-    
+    {
+      "id": "release-20260913T151954Z-21734109",
+      "title": "Beta component release",
+      "publishedAt": "2026-09-13T15:19:54.994393+00:00",
+      "summary": "This is just a component release and is beta only for quick testing, do not use to play."
+    },
     {
       "id": "pre-alpha-testing-begins",
       "title": "WorldOverhaul pre-alpha testing begins",
