@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260915T201151Z-c88a8e0d",
+      "title": "Building entry fix",
+      "publishedAt": "2026-09-15T20:11:51.000541+00:00",
+      "summary": "Vehicles now enter buildings, but inside building handling is still bugged, causing vehicles to park on top of eachother. This is purely visual."
+    },
+    {
       "id": "release-20260915T191443Z-61f961da",
       "title": "Road merging fix and water well fix",
       "publishedAt": "2026-09-15T19:14:43.653250+00:00",
