@@ -62,18 +62,24 @@ def manifest_for(values, bundle, msi, helper, environment):
     }
 
 
-def package(values, makeself):
+def package(values, makeself, input_directory=None, output_directory=None):
     bundle_name = validate_inputs(values)
     repo = os.environ['GITHUB_REPOSITORY']
     require(re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', repo), 'Invalid repository')
     def release():
         return json.loads(run('gh', 'release', 'view', values['release_tag'], '--repo', repo, '--json', 'body,isDraft'))
-    validate_release(release(), values)
+    if input_directory is None: validate_release(release(), values)
+    else: require(output_directory is not None, 'Local packaging needs an output directory')
     # MSI is already compressed. A plain tar avoids another compression dependency.
     with tempfile.TemporaryDirectory(prefix='worldoverhaul-package-') as temporary:
         root = Path(temporary); payload = root / 'payload'; payload.mkdir()
         for name in (values['installer_name'], 'install-linux.sh'):
-            run('gh', 'release', 'download', values['release_tag'], '--repo', repo, '--pattern', name, '--dir', payload)
+            if input_directory is None:
+                run('gh', 'release', 'download', values['release_tag'], '--repo', repo, '--pattern', name, '--dir', payload)
+            else:
+                source = input_directory / name
+                require(source.is_file() and not source.is_symlink(), 'Missing or linked packaging input')
+                shutil.copyfile(source, payload / name)
         msi = payload / values['installer_name']; helper = payload / 'install-linux.sh'
         require(sha256(msi) == values['msi_sha256'], 'Downloaded MSI checksum mismatch')
         require(sha256(helper) == values['helper_sha256'], 'Downloaded helper checksum mismatch')
@@ -109,9 +115,13 @@ def package(values, makeself):
         print(run('bash', bundle, '--', '--help', env=clean_env))
         receipt = root / (bundle_name + '.manifest.json')
         receipt.write_text(json.dumps(manifest_for(values, bundle, msi, helper, os.environ), indent=2) + '\n', encoding='utf-8')
-        validate_release(release(), values)  # Refuse a release published while the job ran.
-        run('gh', 'release', 'upload', values['release_tag'], bundle, receipt, '--repo', repo, '--clobber')
-        print('Verified Linux bundle attached to draft: ' + bundle_name)
+        if input_directory is None:
+            validate_release(release(), values)  # Refuse a release published while the job ran.
+            run('gh', 'release', 'upload', values['release_tag'], bundle, receipt, '--repo', repo, '--clobber')
+        else:
+            output_directory.mkdir(parents=True, exist_ok=True)
+            for source in (bundle, receipt): shutil.copyfile(source, output_directory / source.name)
+        print('Verified Linux bundle: ' + bundle_name)
 
 
 if __name__ == '__main__':

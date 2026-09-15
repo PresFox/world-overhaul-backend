@@ -1,0 +1,62 @@
+name: Package local Linux installer
+run-name: Linux package ${{ inputs.request_id }}
+on:
+  workflow_dispatch:
+    inputs:
+      request_id:
+        required: true
+        type: string
+      input_commit:
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: linux-local-${{ inputs.request_id }}
+  cancel-in-progress: false
+jobs:
+  package:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - name: Validate input identity
+        env:
+          REQUEST_ID: ${{ inputs.request_id }}
+          INPUT_COMMIT: ${{ inputs.input_commit }}
+        run: |
+          python3 -c 'import os,re; assert re.fullmatch("[a-f0-9]{32}",os.environ["REQUEST_ID"]); assert re.fullmatch("[a-f0-9]{40}",os.environ["INPUT_COMMIT"])'
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          ref: ${{ inputs.input_commit }}
+          path: .inputs
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: megastep/makeself
+          ref: 3815292f7359a4ccab8e27bdbe8a844947c51e4c
+          path: .makeself
+          persist-credentials: false
+      - name: Validate and package local inputs
+        env:
+          REQUEST_ID: ${{ inputs.request_id }}
+        run: |
+          python3 -m unittest discover -s scripts -p test_package_linux.py
+          python3 - <<'PY'
+          import sys,json,os
+          from pathlib import Path
+          sys.path.insert(0,'scripts')
+          from package_linux import package
+          values=json.loads(Path('.inputs/request.json').read_text())
+          assert values['request_id']==os.environ['REQUEST_ID']
+          package(values,Path('.makeself/makeself.sh').resolve(),Path('.inputs'),Path('local-output'))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: linux-local-${{ inputs.request_id }}
+          path: local-output/*
+          if-no-files-found: error
+          retention-days: 1
