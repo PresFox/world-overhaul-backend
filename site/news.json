@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260915T163346Z-e7c33c5b",
+      "title": "New stable release",
+      "publishedAt": "2026-09-15T16:33:46.773256+00:00",
+      "summary": "See the discord server for the release notes.\n\nPlease submit bug reports when you find them, especially after crashes. See the list of things to test on the server and add your feedback!\n\nTest the new launcher options as well."
+    },
+    {
       "id": "release-20260913T151954Z-21734109",
       "title": "Beta component release",
       "publishedAt": "2026-09-13T15:19:54.994393+00:00",

@@ -8,38 +8,38 @@
   },
   "Bughook": "https://discord.com/api/webhooks/1547910968732815480/FkkV162QFRUDe7w1C-ohh3ra_i4FhDV8DtesJBLW_WoGEgTT1SKA51yHJ99sp3HVuHv7",
   "injector": {
-    "version": "0.1.4",
-    "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-v0.1.4/WorldOverhaul-0.1.4-win-x64.msi"
+    "version": "0.1.5",
+    "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-v0.1.6/WorldOverhaul-0.1.6-win-x64.msi"
   },
-  "releaseUrl": "https://github.com/PresFox/world-overhaul-backend/releases/tag/launcher-v0.1.4",
+  "releaseUrl": "https://github.com/PresFox/world-overhaul-backend/releases/tag/launcher-v0.1.6",
   "schemaVersion": 3,
   "branches": {
     "stable": {
       "components": {
         "core": {
           "workshopId": "3802122646",
-          "version": "0.0.0",
+          "version": "0.0.1",
           "dlls": [
             {
               "path": "WorldOverhaulLoader.dll",
-              "version": "0.0.0.0",
-              "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+              "version": "0.1.2.0",
+              "sha256": "8942b433d868e936a33ed574d770125b065307ca2ad7b1f35c26d5d3bacabc9b"
             },
             {
               "path": "bin/workshopManager.dll",
-              "version": "0.0.0.0",
-              "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+              "version": "0.1.2.0",
+              "sha256": "6d3806970c6240ad502d9a125374e51fe98b0e3f5ecf4ff93672a5ea4988bbb0"
             }
           ]
         },
         "infrastructure": {
           "workshopId": "3799262663",
-          "version": "0.0.0",
+          "version": "0.0.1",
           "dlls": [
             {
               "path": "bin/WorldOverhaul.dll",
-              "version": "0.0.0.0",
-              "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+              "version": "0.0.1.0",
+              "sha256": "c6269c10d946581c00cd39fbf8750288b89d757023e0e944007d8fcddbc80249"
             }
           ]
         }
