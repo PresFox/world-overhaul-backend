@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260915T175436Z-af2a1a26",
+      "title": "Small road / footpath related fix",
+      "publishedAt": "2026-09-15T17:54:36.329820+00:00",
+      "summary": "This is an auto update for road / footpath connections. Press resync or restart the launcher if it did not update yet."
+    },
+    {
       "id": "release-20260915T171646Z-431ffd59",
       "title": "New stable release",
       "publishedAt": "2026-09-15T17:16:46.979326+00:00",
