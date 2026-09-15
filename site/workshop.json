@@ -1,11 +1,6 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "requiredWorkshopIds": [
-    {
-      "id": "3799262663",
-      "type": "component",
-      "version": "0.1.3"
-    },
     {
       "id": "3799261259",
       "type": "content"

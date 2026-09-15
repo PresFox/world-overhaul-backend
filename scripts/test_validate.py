@@ -3,6 +3,12 @@ from validate import validate_workshop, validate_version
 
 
 class WorkshopTypes(unittest.TestCase):
+    def test_schema_four_content_only(self):
+        validate_workshop({'schemaVersion': 4, 'requiredWorkshopIds': [{'id': '43', 'type': 'content'}], 'incompatibleWorkshopIds': ['99']})
+        for schema, entries in [(4, [{'id': '42', 'type': 'component', 'version': '1.0.0'}]), (5, []), (True, [])]:
+            with self.subTest(schema=schema), self.assertRaises(ValueError):
+                validate_workshop({'schemaVersion': schema, 'requiredWorkshopIds': entries, 'incompatibleWorkshopIds': []})
+
     def test_both_types(self):
         validate_workshop({"requiredWorkshopIds": [{"id": "42", "type": "component", "version": "1.0.0"}, {"id": "43", "type": "content"}], "incompatibleWorkshopIds": ["99"]})
         validate_workshop({"requiredWorkshopIds": [], "incompatibleWorkshopIds": []})

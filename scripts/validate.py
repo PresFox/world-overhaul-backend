@@ -47,11 +47,14 @@ def validate_workshop(rules):
     def workshop_id(value):
         require(type(value) is str and re.fullmatch(r"[1-9][0-9]*", value) and int(value) <= 18446744073709551615,
                 "Workshop IDs must be positive uint64 decimal strings")
+    require(type(rules.get("schemaVersion", 3)) is int and rules.get("schemaVersion", 3) in (3, 4), "Unsupported Workshop schema")
     required = set()
     for item in rules["requiredWorkshopIds"]:
         require(type(item) is dict and "id" in item and "type" in item, "Required mod needs id and type")
         workshop_id(item["id"])
         require(item["type"] in ("component", "content"), "Required mod type must be component or content")
+        if rules.get("schemaVersion") == 4:
+            require(item["type"] == "content", "Schema 4 requires content only; components belong in version.json")
         expected = {"id", "type", "version"} if item["type"] == "component" else {"id", "type"}
         require(set(item) == expected, "Components require version; content has no custom version")
         if item["type"] == "component":
@@ -145,7 +148,9 @@ def validate():
         require(key not in channels, "Only one current release per component/channel")
         channels.add(key)
 
-    rules = read("workshop.json", ["requiredWorkshopIds", "incompatibleWorkshopIds"], version=3)
+    rules_schema = json.loads((ROOT / "workshop.json").read_text(encoding="utf-8"), object_pairs_hook=unique_keys).get("schemaVersion")
+    require(type(rules_schema) is int and rules_schema in (3, 4), "Unsupported Workshop schema")
+    rules = read("workshop.json", ["requiredWorkshopIds", "incompatibleWorkshopIds"], version=rules_schema)
     validate_workshop(rules)
     version_path = ROOT / "version.json"
     require(version_path.stat().st_size <= 1024 * 1024, "Version feed exceeds 1 MiB")
