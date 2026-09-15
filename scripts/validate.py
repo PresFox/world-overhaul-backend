@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlsplit, unquote
+from release_catalog import validate_branches, validate_catalogue_rules
 
 ROOT = Path(__file__).resolve().parents[1] / "site"
 
@@ -44,17 +45,17 @@ def https(value):
 
 
 def validate_workshop(rules):
+    require(type(rules.get('schemaVersion', 3)) is int and rules.get('schemaVersion', 3) in (3, 4), 'Unsupported Workshop schema')
     def workshop_id(value):
         require(type(value) is str and re.fullmatch(r"[1-9][0-9]*", value) and int(value) <= 18446744073709551615,
                 "Workshop IDs must be positive uint64 decimal strings")
-    require(type(rules.get("schemaVersion", 3)) is int and rules.get("schemaVersion", 3) in (3, 4), "Unsupported Workshop schema")
     required = set()
     for item in rules["requiredWorkshopIds"]:
         require(type(item) is dict and "id" in item and "type" in item, "Required mod needs id and type")
         workshop_id(item["id"])
         require(item["type"] in ("component", "content"), "Required mod type must be component or content")
-        if rules.get("schemaVersion") == 4:
-            require(item["type"] == "content", "Schema 4 requires content only; components belong in version.json")
+        if rules.get('schemaVersion') == 4:
+            require(item['type'] == 'content', 'Runtime components now belong in version.json')
         expected = {"id", "type", "version"} if item["type"] == "component" else {"id", "type"}
         require(set(item) == expected, "Components require version; content has no custom version")
         if item["type"] == "component":
@@ -68,19 +69,22 @@ def validate_workshop(rules):
     require(not required & set(incompatible), "A Workshop ID cannot be both required and incompatible")
 
 
-def validate_version(data):
+def validate_version(data, allow_unassigned=False):
     require(type(data) is dict, "Invalid version feed")
     schema = data.get("schemaVersion")
-    require(type(schema) is int and schema in (1, 2), "Unsupported version feed schema")
+    require(type(schema) is int and schema in (1, 2, 3), "Unsupported version feed schema")
     expected = ({"schemaVersion", "version", "downloadUrl", "backupBackendUrl"} if schema == 1 else
                 {"schemaVersion", "injector", "loader", "workshopManager", "releaseUrl", "backupBackendUrl"})
+    if schema == 3:
+        expected = {"schemaVersion", "injector", "branches", "releaseUrl", "backupBackendUrl"}
+        validate_branches(data.get('branches'), allow_unassigned)
     require(set(data) - {"banner", "Bughook"} == expected, "Invalid version feed fields")
     urls = [(key, data.get(key, "")) for key in ("backupBackendUrl", "Bughook")]
     if schema == 1:
         require(type(data["version"]) is str and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._+\-]{0,63}", data["version"]), "Invalid injector version")
         urls.append(("downloadUrl", data["downloadUrl"]))
     else:
-        for name in ("injector", "loader", "workshopManager"):
+        for name in (('injector',) if schema == 3 else ("injector", "loader", "workshopManager")):
             file = data[name]
             require(type(file) is dict and set(file) == {"version", "downloadUrl"}, "Invalid file release fields")
             version = file["version"]
@@ -120,7 +124,7 @@ def validate_version(data):
         require(not banner["enabled"] or bool(banner["img"]), "Enabled banner requires an image")
 
 
-def validate():
+def validate(allow_unassigned=False):
     news = read("news.json", ["items"])
     ids = set()
     for item in news["items"]:
@@ -148,16 +152,24 @@ def validate():
         require(key not in channels, "Only one current release per component/channel")
         channels.add(key)
 
-    rules_schema = json.loads((ROOT / "workshop.json").read_text(encoding="utf-8"), object_pairs_hook=unique_keys).get("schemaVersion")
-    require(type(rules_schema) is int and rules_schema in (3, 4), "Unsupported Workshop schema")
+    rules_schema = json.loads((ROOT / 'workshop.json').read_text(encoding='utf-8'), object_pairs_hook=unique_keys).get('schemaVersion')
+    require(type(rules_schema) is int and rules_schema in (3, 4), 'Unsupported Workshop schema')
     rules = read("workshop.json", ["requiredWorkshopIds", "incompatibleWorkshopIds"], version=rules_schema)
     validate_workshop(rules)
     version_path = ROOT / "version.json"
     require(version_path.stat().st_size <= 1024 * 1024, "Version feed exceeds 1 MiB")
-    validate_version(json.loads(version_path.read_text(encoding="utf-8"), object_pairs_hook=unique_keys))
+    feed = json.loads(version_path.read_text(encoding="utf-8"), object_pairs_hook=unique_keys)
+    validate_version(feed, allow_unassigned)
+    if feed['schemaVersion'] == 3:
+        validate_catalogue_rules(feed, rules)
+    else:
+        require(rules_schema == 3, 'Legacy version feeds require Workshop schema 3')
     print(f"Valid: {len(news['items'])} news items, {len(updates['releases'])} releases, "
           f"{len(rules['requiredWorkshopIds'])} required and {len(rules['incompatibleWorkshopIds'])} incompatible mods")
 
 
 if __name__ == "__main__":
-    validate()
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--allow-unassigned', action='store_true', help='Validate a LOCAL draft with empty Workshop IDs/versions; never use for Pages publication.')
+    validate(parser.parse_args().allow_unassigned)
