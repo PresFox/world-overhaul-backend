@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260919T141804Z-b3e1726f",
+      "title": "Bug fixes and improvements",
+      "publishedAt": "2026-09-19T14:18:04.483802+00:00",
+      "summary": "The mod is playable again.Large bugs mostly in internal routing of vehicles fixed. Verhicles will now properly yield and respect eachothers position. \n\nPedestrians will now properly use the new road system."
+    },
+    {
       "id": "release-20260916T140333Z-f01ba9de",
       "title": "Water fixed",
       "publishedAt": "2026-09-16T14:03:33.844311+00:00",
