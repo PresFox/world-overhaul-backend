@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260919T200902Z-808706da",
+      "title": "Small road fix",
+      "publishedAt": "2026-09-19T20:09:02.110340+00:00",
+      "summary": "Added a small road hotfix."
+    },
+    {
       "id": "release-20260919T141804Z-b3e1726f",
       "title": "Bug fixes and improvements",
       "publishedAt": "2026-09-19T14:18:04.483802+00:00",
