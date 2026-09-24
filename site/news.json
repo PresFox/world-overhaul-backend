@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260924T184559Z-b8ef44cb",
+      "title": "New stable release",
+      "publishedAt": "2026-09-24T18:45:59.188020+00:00",
+      "summary": "Date: 2026-09-24 18:45 UTC\nVersions: Infrastructure 0.0.10 \u00b7 WorldOverhaul.dll 0.0.10.0 \u00b7 Content revision release-20260924T184559Z-b8ef44cb\n\nFixed small bugs related to parallel snapping and attachment\nAdded new road type\n\nThis version should be stable, so play, build cool things, share screenshots and send bug reports for anything funny!"
+    },
+    {
       "id": "release-20260920T173228Z-2bf6377e",
       "title": "Another Small road fix",
       "publishedAt": "2026-09-20T17:32:28.208563+00:00",
