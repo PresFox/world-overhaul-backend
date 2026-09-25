@@ -34,12 +34,12 @@
         },
         "infrastructure": {
           "workshopId": "3799262663",
-          "version": "0.0.10",
+          "version": "0.1.4",
           "dlls": [
             {
               "path": "bin/WorldOverhaul.dll",
-              "version": "0.0.10.0",
-              "sha256": "e480686fb454316f209967a3ae8f6924a46782c13f4bc407c1cba84fd089d4fc"
+              "version": "0.1.4.0",
+              "sha256": "40c008f6b59cc604884c00a4d8f65b9bd01f818b72830bfb6bbf0d2b04f70f71"
             }
           ]
         }

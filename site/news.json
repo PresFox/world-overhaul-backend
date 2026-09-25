@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260925T150156Z-34534901",
+      "title": "Stable fix",
+      "publishedAt": "2026-09-25T15:01:56.791371+00:00",
+      "summary": "Date: 2026-09-25 15:01 UTC\nVersions: Infrastructure 0.1.4 \u00b7 WorldOverhaul.dll 0.1.4.0\n\nVehicles will enter buildings properly again"
+    },
+    {
       "id": "release-20260924T184559Z-b8ef44cb",
       "title": "New stable release",
       "publishedAt": "2026-09-24T18:45:59.188020+00:00",
