@@ -10,6 +10,12 @@ import subprocess
 import tempfile
 
 MAKESELF_COMMIT = '3815292f7359a4ccab8e27bdbe8a844947c51e4c'
+# The updater bootstrap rollout publishes to its own draft tag so it cannot
+# clobber the unrelated "launcher-v<x>" release with the same MSI version.
+RELEASE_TAG_PREFIXES = ('launcher-v', 'launcher-updater-v')
+# Its release journal ID is the only ownership marker outside the generated
+# "release-<timestamp>-<suffix>" form, and is accepted by exact value only.
+APPROVED_RELEASE_MARKERS = ('updater-bootstrap-20260927',)
 START_SCRIPT = '''#!/usr/bin/env bash
 set -eu
 bundle_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
@@ -33,9 +39,10 @@ def validate_inputs(values):
     match = re.fullmatch(r'WorldOverhaul-(\d+\.\d+\.\d+)-win-x64\.msi', values['installer_name'])
     require(match, 'Invalid MSI filename')
     version = match[1]
-    require(values['release_tag'] == 'launcher-v' + version or
+    require(values['release_tag'] in {prefix + version for prefix in RELEASE_TAG_PREFIXES} or
             re.fullmatch(r'linux-package-test-[a-f0-9]{32}', values['release_tag']), 'Release tag does not match MSI')
-    require(re.fullmatch(r'release-[0-9TZa-f-]+', values['release_marker']), 'Invalid release ownership marker')
+    require(re.fullmatch(r'release-[0-9TZa-f-]+', values['release_marker']) or
+            values['release_marker'] in APPROVED_RELEASE_MARKERS, 'Invalid release ownership marker')
     for key in ('msi_sha256', 'helper_sha256'):
         require(re.fullmatch(r'[a-f0-9]{64}', values[key]), 'Invalid ' + key)
     return 'WorldOverhaul-' + version + '-linux.run'

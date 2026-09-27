@@ -37,7 +37,8 @@ establish live Wine/Proton compatibility.
 
 | Feed | URL |
 | --- | --- |
-| Injector version and backup backend | https://presfox.github.io/world-overhaul-backend/version.json |
+| Shared launcher, branch components and per-branch injectors | https://presfox.github.io/world-overhaul-backend/version-v4.json |
+| Schema 3 projection of the branch feed read by older launchers | https://presfox.github.io/world-overhaul-backend/version.json |
 | News | https://presfox.github.io/world-overhaul-backend/news.json |
 | Updates | https://presfox.github.io/world-overhaul-backend/updates.json |
 | Workshop requirements and incompatibilities | https://presfox.github.io/world-overhaul-backend/workshop.json |
@@ -45,25 +46,90 @@ establish live Wine/Proton compatibility.
 The earlier `compatibility.json` URL remains a deployment-generated alias of
 `workshop.json`. Edit only `site/workshop.json` for Workshop rules.
 
-Workshop rules use `schemaVersion: 3`; version.json uses schema 2; other feeds use schema 1.
-Three Workshop items are required. No injector installer or separate DLL downloads have been published yet.
+`version-v4.json` uses schema **4** and is the branch feed. `version.json` remains
+the schema **3** projection that older launchers read, so both files are published
+and must agree: validation rejects a `version.json` that differs from the exact
+projection of `version-v4.json`. `workshop.json` uses schema **4** and holds the
+shared content requirements and incompatibilities only. `python scripts/validate.py`
+checks every feed plus that projection; `--allow-unassigned` accepts local drafts
+and must never gate publication.
 
-`version.json` tracks `injector`, `loader`, and `workshopManager` separately.
-Each entry has `version` (three or four numeric parts) and `downloadUrl` (HTTPS,
-or empty until the corresponding artifact exists). All three currently start at `0.1.0`.
-`releaseUrl` is the shared HTTPS releases page opened after the user accepts an update
-notification. It currently points to this repository's GitHub Releases page.
-Only bump versions for artifacts actually published. The future releaser must update
-injector project version / Loader loader.rc / Workshop Manager workshop_manager.rc
-along with the corresponding feed entry. DLL versions are read from file resources;
-missing or unversioned files are not guessed to be older releases.
+`python scripts/validate.py --project-legacy [PATH]` prints the schema 3 projection
+of `site/version-v4.json`, or writes it to `PATH` when one is given. The Releaser
+regenerates `version.json` that way after every branch publication instead of
+hand-editing the projection.
 
-The injector accepts both legacy schema 1 and schema 2. Schema 1-only older clients
-cannot read the new feed and need a manual launcher update. Notifications use fresh
-schema 2 data, compare numeric versions, and appear at most once per session after
-preparation finishes. No automatic artifact download, replacement or execution occurs.
-The existing injector version/download and backup INI cache remains supported;
-DLL release information is used directly from the fetched feed.
+Both feeds keep the shared `injector: {version, downloadUrl}`, `releaseUrl`,
+`backupBackendUrl` and optional `banner`/`Bughook` unchanged; the projection copies
+them verbatim. Loader and Workshop Manager no longer have top-level releases or
+direct-download URLs. They are Workshop files.
+
+`branches.stable.components` and `branches.beta.components` are objects keyed by
+permanent component names. Initially both contain `core` and `infrastructure`.
+Readers must support additional component keys without a launcher rebuild.
+Each component has exactly:
+
+- `workshopId`: positive uint64 decimal **string**, distinct across all branches/components.
+- `version`: the Workshop package version, `major.minor.patch`, matching `manifest.json`.
+- `dlls`: an array of `{path, version, sha256}`. `path` is relative to the installed
+  WorldOverhaul root; `version` is the actual numeric PE file version (three/four
+  parts); `sha256` is the 64-character lowercase hash of the packaged DLL.
+
+Core owns `WorldOverhaulLoader.dll` and `bin/workshopManager.dll`. Infrastructure
+owns `bin/WorldOverhaul.dll`. DLL paths cannot overlap within a branch. Additional
+DLLs may live below `bin/`; launcher/dependency files under `include/` are outside
+this catalogue. Never substitute a package version for a missing PE version.
+
+`branches.<branch>.injector` is that branch's own launcher package:
+`{workshopId, version, manifestSha256}`. `workshopId` is a positive uint64 decimal
+string, `version` is the injected launcher version, and `manifestSha256` is the
+64-character lowercase SHA-256 of the package's schema-1 `manifest.json`. The feed
+digest authenticates manifest content; it is not proof of package identity, and the
+updater still verifies the downloaded package against it. The three fields are
+assigned together or left as three empty strings; partial entries are invalid.
+Injector publication is independent of component publication: either may remain
+unreleased while the other has valid release metadata.
+
+Runtime IDs are unique across the whole feed: component and branch injector
+`workshopId` values must all differ, in every branch. No runtime ID may appear in
+`workshop.json`'s required-content or incompatible lists; runtime packages are
+delivered through Workshop subscriptions described by the branch feed.
+
+Empty IDs, package versions, DLL versions, hashes and branch injector fields mean
+**unassigned local draft data**, never fallback to Stable. An entirely unreleased
+Beta component branch can remain unavailable in a published feed. Active component
+branches require complete component data; injector entries independently require
+either a complete triplet or three empty strings.
+
+Releaser inputs are Core / Infrastructure / shared Content / branch-specific Injector,
+a `stable` or `beta` branch, and independent Build locally / Clean release modes.
+Component selection bumps that branch's package version (initial `0.1.0`) and
+reads the packaged DLL metadata. Infrastructure passes its package version into
+`WORLD_OVERHAUL_PACKAGE_VERSION`; Core uses its binaries' actual resource versions.
+Confirm all selected Steam uploads before advertising their catalogue entries.
+Publishing Beta runtime packages leaves Stable, launcher metadata and news intact.
+Beta publication writes and stages only version-v4.json and its regenerated
+version.json projection; it creates no GitHub release.
+Publish shared Content and Injector through Stable. All generated Workshop VDFs
+use visibility 3, both for local preparation and upload.
+Only Injector selection builds/publishes an MSI; Core alone never builds one.
+
+Build locally needs no GitHub/Steam credentials and leaves the hosted catalogue
+unchanged. It emits package folders plus `workshop-vdf/<component>-<branch>.vdf`
+and a `components.preview.json` containing actual package/DLL metadata. An empty
+catalogue ID becomes `0` in a creation VDF and local manifest. After Steam assigns
+the item ID, enter it in the catalogue and rebuild; ID-0 packages are not ready
+for launcher distribution. The latest local package of each component/branch is
+retained; superseded completed packages are pruned, keeping journals and hashes.
+
+The launcher agent owns branch selection, subscriptions, file installation and
+readiness. The bootstrap installer contract is `$RELEASE_BRANCH stable|beta` in
+its staged injector.ini; normal MSI preservation of an existing INI still applies.
+A branch switch must resolve the complete selected catalogue, including older
+versions when returning to Stable. Clients that only understand version.json keep
+working through the schema 3 projection; a launcher that reads version-v4.json must
+prefer it and fall back to version.json only when the sibling file is missing (404),
+never when it is present but invalid.
 
 The backup is an HTTPS backend directory ending in `/`,
 currently the raw GitHub `main/site/` directory. It is not an alternative download.
@@ -72,7 +138,8 @@ The injector saves validated values in injector.ini as `$LATEST_INJECTOR_VERSION
 metadata. Version and Workshop requests try the configured backup if the primary
 fails or returns invalid data; cancellation does not trigger fallback. The raw
 backup shares GitHub infrastructure, so it is not an independent hosting provider.
-This is discovery metadata only; it does not trigger an executable update.
+The launcher release remains an installer update; runtime DLL delivery is through
+the selected branch's Workshop packages.
 
 The optional `Bughook` string contains the configured HTTPS bug-report webhook.
 It is public feed data, published with the owner's explicit approval. This field
@@ -98,7 +165,9 @@ requires a nonempty image URL. Older feeds without `banner` remain accepted.
 
 ## Editing and publishing
 
-1. Edit the appropriate file under `site/`, either on GitHub or locally.
+1. Edit the appropriate file under `site/`, either on GitHub or locally. Branch
+   data is edited in `version-v4.json`; regenerate `version.json` with
+   `--project-legacy` instead of editing the projection separately.
 2. For local edits, run `python scripts/validate.py` from the repository root.
 3. Commit and push to `main` (or open a pull request first).
 4. The **Validate and publish launcher feeds** workflow validates all feeds and
@@ -155,37 +224,35 @@ integrity verification must remain in the installer/updater implementation.
 ## Workshop compatibility contract
 
 `workshop.json` contains `schemaVersion`, `requiredWorkshopIds` and
-`incompatibleWorkshopIds`. Required entries contain an `id` and a `type` of
-exactly `"component"` or `"content"`. Components also require an exact `version`;
-content entries have no custom version. IDs remain **decimal strings**, preserving
-uint64 precision. Incompatible entries remain ID strings. For example (illustrative IDs only):
+`incompatibleWorkshopIds`. Schema 4 required entries contain an `id` and a `type`
+of exactly `"content"`; they have no custom version. Runtime component and branch
+injector IDs and versions belong exclusively in version-v4.json. IDs remain
+**decimal strings**, preserving uint64 precision. Incompatible entries remain ID
+strings. For example (illustrative IDs only):
 
 ```json
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "requiredWorkshopIds": [
-    {"id": "123456789", "type": "component", "version": "1.0.0"},
     {"id": "234567890", "type": "content"}
   ],
   "incompatibleWorkshopIds": []
 }
 ```
 
-The injector preserves types as `$REQUIRED_WORKSHOP_ID 123456789 COMPONENT 1.0.0`
-or `$REQUIRED_WORKSHOP_ID 234567890 CONTENT` in `WorldOverhaul/injector.ini`.
-Legacy local entries without a type are read as CONTENT. Schema 3 JSON always
-requires an explicit type and a component version. Invalid fields reject the
-complete update. Type-only and version-only changes update the INI.
-Versions are case-sensitive, 1–64 characters: letters, digits, dot, underscore,
-plus or hyphen, starting with a letter or digit. Older injectors reject schema 3
-and retain their last valid configuration.
+The launcher must combine these shared content requirements with the selected
+version-v4.json branch's runtime packages, including that branch's injector.
+Incompatibility rules remain shared. Reject an ID that is both required and
+incompatible, or used as both content and a runtime package; validation rejects
+any runtime ID that also appears in either list of `workshop.json`. Backend
+validation retains legacy schema 3 support for migration.
 
 Component packages provide a schema-1 manifest.json with matching workshopId,
 version and copy-only/update/remove operations. The launcher verifies hashes and
 prepares runtime files before allowing Play. Ordinary content provides no custom
 manifest; it stays in Workshop and required content is admitted to the whitelist.
 Publish the component to Steam and verify availability before updating this feed's
-expected version. Never reuse a release version for changed payload bytes.
+expected package version. Never reuse a release version for changed payload bytes.
 
 - Empty lists declare no rules.
 - IDs must be positive uint64 values and unique within a list.
@@ -205,22 +272,20 @@ $UPDATES_URL "updates.json"
 $COMPATIBILITY_URL "workshop.json"
 ```
 
-The injector synchronises Workshop rules at startup, during a successful Steam
-inventory refresh, and through Settings > Sync Workshop rules. `workshop.json`
-is authoritative for the local `$REQUIRED_WORKSHOP_ID` and
-`$INCOMPATIBLE_WORKSHOP_ID` lists: additions and removals replace the local sets;
-empty arrays clear them. Equal sets do not rewrite the INI. Other preferences,
-comments are preserved. Failed requests,
-invalid JSON or conflicting file edits retain the previous valid configuration.
+For the branch migration, `workshop.json` supplies the shared content and
+incompatibility sets; the branch feed supplies the selected branch's component and
+injector requirements. A configured `$VERSION_URL` ending in `version.json` names
+the legacy projection, so the launcher requests the sibling `version-v4.json` first
+and falls back to the configured file only on 404. Custom URLs keep working. The
+launcher must keep these sources distinct and prepare their combined requirements
+before Play. Branch changes must reconcile component subscriptions and install the
+selected versions, including a downgrade when returning from Beta to Stable.
 
-The development injector checks subscriptions and completed downloads at startup,
-Workshop refresh, preparation retry and before Play. It validates Steam's async
-subscription/download results and installed/current state. Exact component
-version mismatch requests one update per attempt, then blocks if unresolved.
-A configured feed that cannot be refreshed retains the INI but blocks preparation;
-an offline bypass is not defined. Required content is added to the whitelist,
-preserving its native enable flag and prior selections. Removing a required ID
-does not unsubscribe or deselect it. Native hooks remain disabled in development.
-News/update retrieval and incompatible-mod classification remain future work.
+The launcher agent owns the corresponding INI representation, refresh behavior,
+Steam subscription/download handling, Core manifest permissions and file update
+transaction. These backend changes do not implement or validate those launcher
+behaviors. Preserve unrelated preferences and native whitelist selections during
+the migration. Reject incomplete branches and retain usable prior configuration
+when a response is invalid; never silently substitute another branch.
 
 This public static service does not accept uploads or store private settings.

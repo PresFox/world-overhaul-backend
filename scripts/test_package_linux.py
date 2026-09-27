@@ -34,6 +34,23 @@ class PackageTests(unittest.TestCase):
         self.values['release_tag'] = 'linux-package-test-' + 'd'*32
         self.assertEqual(validate_inputs(self.values), 'WorldOverhaul-0.1.4-linux.run')
 
+    def test_accepts_the_distinct_updater_bootstrap_release(self):
+        self.values['release_tag'] = 'launcher-updater-v0.1.4'
+        self.values['release_marker'] = 'updater-bootstrap-20260927'
+        self.assertEqual(validate_inputs(self.values), 'WorldOverhaul-0.1.4-linux.run')
+        validate_release(dict(isDraft=True, body='Notes\n<!-- updater-bootstrap-20260927 -->'), self.values)
+
+    def test_rejects_mismatched_updater_tag_and_unapproved_markers(self):
+        for tag in ('launcher-updater-v0.1.5', 'launcher-updater-v0.1.40', 'launcher-updater-0.1.4',
+                    'launcher-updater-v0.1.4-extra', 'launcher-v0.1.40', 'launcher-v0.1.4x'):
+            with self.subTest(tag=tag), self.assertRaises(ValueError):
+                validate_inputs(dict(self.values, release_tag=tag))
+        for marker in ('updater-bootstrap-20260928', 'updater-bootstrap-20260927x',
+                       'updater-bootstrap-2026092', 'Updater-bootstrap-20260927',
+                       'updater-bootstrap-20260927 ', '--flag'):
+            with self.subTest(marker=marker), self.assertRaises(ValueError):
+                validate_inputs(dict(self.values, release_marker=marker))
+
     @unittest.skipUnless(os.name == 'posix' and shutil.which('bash'), 'Linux startup behavior')
     def test_startup_preserves_cwd_arguments_and_exit_status(self):
         with tempfile.TemporaryDirectory() as temporary:
