@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260927T115828Z-b7730561",
+      "title": "Content update",
+      "publishedAt": "2026-09-27T11:58:28.006627+00:00",
+      "summary": "Date: 2026-09-27 11:58 UTC\nVersions: Content revision release-20260927T115828Z-b7730561\n\nIncluded:\nTransrapid maglev trainset\nPolish Px48 narrow gauge steam locomotive\nNew passenger wagon and new aggregrate wagon\nLowa n3 diesel locomotive\nBaldwin 262T steam locomotive"
+    },
+    {
       "id": "release-20260925T150156Z-34534901",
       "title": "Stable fix",
       "publishedAt": "2026-09-25T15:01:56.791371+00:00",
