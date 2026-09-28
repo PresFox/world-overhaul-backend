@@ -1,18 +1,11 @@
 {
-  "backupBackendUrl": "https://raw.githubusercontent.com/PresFox/world-overhaul-backend/main/site/",
-  "banner": {
-    "enabled": false,
-    "img": "",
-    "href": "",
-    "height": 0
-  },
-  "Bughook": "https://discord.com/api/webhooks/1547910968732815480/FkkV162QFRUDe7w1C-ohh3ra_i4FhDV8DtesJBLW_WoGEgTT1SKA51yHJ99sp3HVuHv7",
+  "schemaVersion": 4,
   "injector": {
     "version": "0.1.8",
     "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-updater-v0.1.8/WorldOverhaul-0.1.8-win-x64.msi"
   },
   "releaseUrl": "https://github.com/PresFox/world-overhaul-backend/releases/tag/launcher-updater-v0.1.8",
-  "schemaVersion": 4,
+  "backupBackendUrl": "https://raw.githubusercontent.com/PresFox/world-overhaul-backend/main/site/",
   "branches": {
     "stable": {
       "components": {
@@ -70,12 +63,12 @@
         },
         "infrastructure": {
           "workshopId": "3802125843",
-          "version": "0.1.5",
+          "version": "0.1.6",
           "dlls": [
             {
               "path": "bin/WorldOverhaul.dll",
-              "version": "0.1.5.0",
-              "sha256": "1c0da8dad8da3cbc0b1395f241cf4ac67b279536c21b250c4b3dd8787857b022"
+              "version": "0.1.6.0",
+              "sha256": "ff19cef922c0660fd4243b5ec2af49523f31e16b5009a737047188aece125f15"
             }
           ]
         }
@@ -86,5 +79,12 @@
         "manifestSha256": "6b4bb15c4745c8fb2d299ae8fe5dd6c2bc875656a812ef33a341243906ceb746"
       }
     }
-  }
+  },
+  "banner": {
+    "enabled": false,
+    "img": "",
+    "href": "",
+    "height": 0
+  },
+  "Bughook": "https://discord.com/api/webhooks/1547910968732815480/FkkV162QFRUDe7w1C-ohh3ra_i4FhDV8DtesJBLW_WoGEgTT1SKA51yHJ99sp3HVuHv7"
 }
