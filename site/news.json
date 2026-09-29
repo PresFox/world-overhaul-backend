@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260929T130702Z-8c9d6744",
+      "title": "Large stable release.",
+      "publishedAt": "2026-09-29T13:07:02.020898+00:00",
+      "summary": "Date: 2026-09-29 13:07 UTC\nVersions: Core 0.2.1 \u00b7 WorldOverhaulLoader.dll 0.2.1.0 \u00b7 workshopManager.dll 0.2.1.0 \u00b7 Infrastructure 0.2.1 \u00b7 WorldOverhaul.dll 0.2.1.0 \u00b7 Injector 0.2.1 \u00b7 Content revision release-20260929T130702Z-8c9d6744\n\nThis is a large update that will hopefully be the last big update before the mod can go public. The idea is to have a week or two of testing now with hotfixes while I change some architectural stuff around to make the mod more open for third party DLL's to run on it. \n\nNew features:\n- The launcher will require one more manual installation, after that it will automatically update\n- Bridges can now be merged and split freely while using the ramps\n- Water and sewage switches are back and functional\n- Added extensive performerance diagnostics to catch slowdowns and being able to fix them later\n- A ton of new models and content, including skins \n\nBug fixes:\nFixed crashes when workshop buildings use unrecognized characters\nFixed save-loading crashes involving Workshop buildings and underground meshes.\nFixed construction offices failing to find reachable construction projects.\nFixed vehicles in offices and parking buildings failing to find reachable fuel stations or horse feeders.\nFixed pedestrian connections and reachability, including residents stuck at building entrances, on tram roads, or while crossing roads.\nFixed progressive slowdowns when building and changing connections.\nRestored parallel rail snapping from track ends and corrected parallel track spacing.\nFixed water failing to reach connected treatment plants.\nFixed unnecessary vehicle parsing errors from empty optional $LIGHT_BLINKER entries.\nReclassified recoverable routing and deferred-refresh messages as warnings.\nFixed unnecessary launcher restart/update prompts for the same version.\n\nPlease playtest, and don't forget to share good looking screenshots in the showoff channel!"
+    },
+    {
       "id": "release-20260927T115828Z-b7730561",
       "title": "Content update",
       "publishedAt": "2026-09-27T11:58:28.006627+00:00",

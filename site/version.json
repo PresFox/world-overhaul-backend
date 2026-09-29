@@ -1,38 +1,38 @@
 {
   "schemaVersion": 3,
   "injector": {
-    "version": "0.1.8",
-    "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-updater-v0.1.8/WorldOverhaul-0.1.8-win-x64.msi"
+    "version": "0.2.1",
+    "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-v0.3.1/WorldOverhaul-0.3.1-win-x64.msi"
   },
-  "releaseUrl": "https://github.com/PresFox/world-overhaul-backend/releases/tag/launcher-updater-v0.1.8",
+  "releaseUrl": "https://github.com/PresFox/world-overhaul-backend/releases/tag/launcher-v0.3.1",
   "backupBackendUrl": "https://raw.githubusercontent.com/PresFox/world-overhaul-backend/main/site/",
   "branches": {
     "stable": {
       "components": {
         "core": {
           "workshopId": "3802122646",
-          "version": "0.0.1",
+          "version": "0.2.1",
           "dlls": [
             {
               "path": "WorldOverhaulLoader.dll",
-              "version": "0.1.2.0",
-              "sha256": "8942b433d868e936a33ed574d770125b065307ca2ad7b1f35c26d5d3bacabc9b"
+              "version": "0.2.1.0",
+              "sha256": "20ae2200a337f47d44225e9713050c923c7107fc9ae0f129e3a2aee863007ba3"
             },
             {
               "path": "bin/workshopManager.dll",
-              "version": "0.1.2.0",
-              "sha256": "6d3806970c6240ad502d9a125374e51fe98b0e3f5ecf4ff93672a5ea4988bbb0"
+              "version": "0.2.1.0",
+              "sha256": "e826609b501792acf91cae7ee3de64ed8cd005b855ead0be7f7eb220ddededd6"
             }
           ]
         },
         "infrastructure": {
           "workshopId": "3799262663",
-          "version": "0.1.4",
+          "version": "0.2.1",
           "dlls": [
             {
               "path": "bin/WorldOverhaul.dll",
-              "version": "0.1.4.0",
-              "sha256": "40c008f6b59cc604884c00a4d8f65b9bd01f818b72830bfb6bbf0d2b04f70f71"
+              "version": "0.2.1.0",
+              "sha256": "b00af512742481db63142ffdb338e5c30ad1af641ed47fc5ca9f8dc0d4655612"
             }
           ]
         }
