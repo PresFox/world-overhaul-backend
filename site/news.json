@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20260930T092445Z-ac46ad55",
+      "title": "Updated tu2",
+      "publishedAt": "2026-09-30T09:24:45.441331+00:00",
+      "summary": "Date: 2026-09-30 09:24 UTC\nVersions: Content revision release-20260930T092445Z-ac46ad55\n\nThe Tu2 is updated and now available in the game"
+    },
+    {
       "id": "release-20260929T130702Z-8c9d6744",
       "title": "Large stable release.",
       "publishedAt": "2026-09-29T13:07:02.020898+00:00",
