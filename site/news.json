@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20261003T154110Z-ab54e44b",
+      "title": "Hotfixes + Laauncher update",
+      "publishedAt": "2026-10-03T15:41:10.256466+00:00",
+      "summary": "Date: 2026-10-03 15:41 UTC\nVersions: Core 0.2.2 \u00b7 WorldOverhaulLoader.dll 0.2.2.0 \u00b7 workshopManager.dll 0.2.2.0 \u00b7 Infrastructure 0.2.2 \u00b7 WorldOverhaul.dll 0.2.2.0 \u00b7 Injector 0.3.2 \u00b7 Content revision release-20261003T154110Z-ab54e44b\n\nThis release adds options to report bugs from ingame and adds a ton of features to the launcher\n\nThis update will be downloaded automatically\n\nWARNING: This release willl overwrite surfaces and roads / bridges. Back up first!"
+    },
+    {
       "id": "release-20260930T092445Z-ac46ad55",
       "title": "Updated tu2",
       "publishedAt": "2026-09-30T09:24:45.441331+00:00",

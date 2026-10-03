@@ -11,28 +11,28 @@
       "components": {
         "core": {
           "workshopId": "3802122646",
-          "version": "0.2.1",
+          "version": "0.2.2",
           "dlls": [
             {
               "path": "WorldOverhaulLoader.dll",
-              "version": "0.2.1.0",
-              "sha256": "20ae2200a337f47d44225e9713050c923c7107fc9ae0f129e3a2aee863007ba3"
+              "version": "0.2.2.0",
+              "sha256": "d791fea9606303e1898edc3ef36e058204a96c520f5fb925facaa3195be1fc2d"
             },
             {
               "path": "bin/workshopManager.dll",
-              "version": "0.2.1.0",
-              "sha256": "e826609b501792acf91cae7ee3de64ed8cd005b855ead0be7f7eb220ddededd6"
+              "version": "0.2.2.0",
+              "sha256": "3ec166a0cc25aafe6c1f9913939569ac6abf986722427e2ccbaa1c84d608ad8e"
             }
           ]
         },
         "infrastructure": {
           "workshopId": "3799262663",
-          "version": "0.2.1",
+          "version": "0.2.2",
           "dlls": [
             {
               "path": "bin/WorldOverhaul.dll",
-              "version": "0.2.1.0",
-              "sha256": "b00af512742481db63142ffdb338e5c30ad1af641ed47fc5ca9f8dc0d4655612"
+              "version": "0.2.2.0",
+              "sha256": "beaf0d4f6adcf6a14ecf4db33aa4c20e7a8c6a38a52e44b1f679fc34eeebca8d"
             }
           ]
         }
