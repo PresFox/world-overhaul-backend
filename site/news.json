@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20261003T190258Z-900bb9a4",
+      "title": "Hotfix Launcher",
+      "publishedAt": "2026-10-03T19:02:58.034015+00:00",
+      "summary": "Date: 2026-10-03 19:02 UTC\nVersions: Injector 0.3.3\n\nThis update will prevent further launcher update problems in the future."
+    },
+    {
       "id": "release-20261003T154110Z-ab54e44b",
       "title": "Hotfixes + Laauncher update",
       "publishedAt": "2026-10-03T15:41:10.256466+00:00",

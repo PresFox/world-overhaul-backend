@@ -1,10 +1,10 @@
 {
   "schemaVersion": 4,
   "injector": {
-    "version": "0.2.1",
-    "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-v0.3.1/WorldOverhaul-0.3.1-win-x64.msi"
+    "version": "0.3.3",
+    "downloadUrl": "https://github.com/PresFox/world-overhaul-backend/releases/download/launcher-v0.3.3/WorldOverhaul-0.3.3-win-x64.msi"
   },
-  "releaseUrl": "https://github.com/PresFox/world-overhaul-backend/releases/tag/launcher-v0.3.1",
+  "releaseUrl": "https://github.com/PresFox/world-overhaul-backend/releases/tag/launcher-v0.3.3",
   "backupBackendUrl": "https://raw.githubusercontent.com/PresFox/world-overhaul-backend/main/site/",
   "branches": {
     "stable": {
@@ -39,8 +39,8 @@
       },
       "injector": {
         "workshopId": "3809356665",
-        "version": "0.3.2",
-        "manifestSha256": "9fa891c084acd5b75cc9937e361e3ecf475ce8a1be56014e1adc02fc9a6fb851"
+        "version": "0.3.3",
+        "manifestSha256": "13a952917a254bafc6f774026a36548d5df10bd5d99adb3630ecc52bf38a6488"
       }
     },
     "beta": {
