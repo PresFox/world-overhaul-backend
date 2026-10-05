@@ -39,8 +39,8 @@
       },
       "injector": {
         "workshopId": "3809356665",
-        "version": "0.3.3",
-        "manifestSha256": "13a952917a254bafc6f774026a36548d5df10bd5d99adb3630ecc52bf38a6488"
+        "version": "0.3.4",
+        "manifestSha256": "25affbb7cf895e2a504b9e77cb64a27f3365727261e9aad33872da5fbc8fdedc"
       }
     },
     "beta": {
