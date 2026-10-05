@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20261005T155317Z-0617f8a8",
+      "title": "Stable launcher release",
+      "publishedAt": "2026-10-05T15:53:17.666045+00:00",
+      "summary": "Date: 2026-10-05 15:53 UTC\nVersions: Injector 0.3.5\n\nThis launcher release opens up the rail class editor, but more important then that, it supports running the experimental version of WO. \n\nDo NOT select this branch, it is only for people who are building their own mods against WO's loader. Other then that, the launcher has some bugfixes, an easier update path, and some more create and or share content possibilities."
+    },
+    {
       "id": "release-20261005T151910Z-24ed1d96",
       "title": "Stable launcher release",
       "publishedAt": "2026-10-05T15:19:10.909147+00:00",
