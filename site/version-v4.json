@@ -27,12 +27,12 @@
         },
         "infrastructure": {
           "workshopId": "3799262663",
-          "version": "0.2.2",
+          "version": "0.3.1",
           "dlls": [
             {
               "path": "bin/WorldOverhaul.dll",
-              "version": "0.2.2.0",
-              "sha256": "beaf0d4f6adcf6a14ecf4db33aa4c20e7a8c6a38a52e44b1f679fc34eeebca8d"
+              "version": "0.3.1.0",
+              "sha256": "d4fae3773c8940ca1709053423816dad0f9a18d66d7bad3e0eb9a65405754612"
             }
           ]
         }
@@ -63,12 +63,12 @@
         },
         "infrastructure": {
           "workshopId": "3802125843",
-          "version": "0.1.6",
+          "version": "0.3.1",
           "dlls": [
             {
               "path": "bin/WorldOverhaul.dll",
-              "version": "0.1.6.0",
-              "sha256": "ff19cef922c0660fd4243b5ec2af49523f31e16b5009a737047188aece125f15"
+              "version": "0.3.1.0",
+              "sha256": "d4fae3773c8940ca1709053423816dad0f9a18d66d7bad3e0eb9a65405754612"
             }
           ]
         }
