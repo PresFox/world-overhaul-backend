@@ -11,17 +11,17 @@
       "components": {
         "core": {
           "workshopId": "3802122646",
-          "version": "0.2.2",
+          "version": "0.2.3",
           "dlls": [
             {
               "path": "WorldOverhaulLoader.dll",
-              "version": "0.2.2.0",
-              "sha256": "d791fea9606303e1898edc3ef36e058204a96c520f5fb925facaa3195be1fc2d"
+              "version": "0.2.3.0",
+              "sha256": "83f5e388fa0c37fa6f400477c33d190a3f88f73e0525fec1d3de31ce7bb0fee0"
             },
             {
               "path": "bin/workshopManager.dll",
-              "version": "0.2.2.0",
-              "sha256": "3ec166a0cc25aafe6c1f9913939569ac6abf986722427e2ccbaa1c84d608ad8e"
+              "version": "0.2.3.0",
+              "sha256": "4c64c7efb972b99edede60e79699f161ec6606c82018afa0124584fe28961065"
             }
           ]
         },
@@ -47,17 +47,17 @@
       "components": {
         "core": {
           "workshopId": "3802125089",
-          "version": "0.1.1",
+          "version": "0.2.3",
           "dlls": [
             {
               "path": "WorldOverhaulLoader.dll",
-              "version": "0.1.3.0",
-              "sha256": "07fd22fe8ed8e74a8abf121f56e1897e03d75bd3ba3887d4ece7153a03274975"
+              "version": "0.2.3.0",
+              "sha256": "83f5e388fa0c37fa6f400477c33d190a3f88f73e0525fec1d3de31ce7bb0fee0"
             },
             {
               "path": "bin/workshopManager.dll",
-              "version": "0.1.3.0",
-              "sha256": "8a22c0d32c51199b2b4b55dd00e70e0df87f10e706dd528931c16b655c763a4f"
+              "version": "0.2.3.0",
+              "sha256": "4c64c7efb972b99edede60e79699f161ec6606c82018afa0124584fe28961065"
             }
           ]
         },
