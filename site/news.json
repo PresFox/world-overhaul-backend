@@ -2,6 +2,12 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "release-20261010T154827Z-78bf2756",
+      "title": "Small road / CO fix",
+      "publishedAt": "2026-10-10T15:48:27.001925+00:00",
+      "summary": "Branches: Stable and Beta\nDate: 2026-10-10 15:48 UTC\nVersions: Infrastructure 0.3.3 \u00b7 WorldOverhaul.dll 0.3.3.0 \u00b7 Injector 0.3.8\n\nThis update should fix some routing issues and add better logging for future fixes."
+    },
+    {
       "id": "release-20261009T170623Z-aeb988c4",
       "title": "Infrastructure definition update",
       "publishedAt": "2026-10-09T17:06:23.727949+00:00",

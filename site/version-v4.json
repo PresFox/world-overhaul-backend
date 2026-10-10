@@ -27,20 +27,20 @@
         },
         "infrastructure": {
           "workshopId": "3799262663",
-          "version": "0.3.2",
+          "version": "0.3.3",
           "dlls": [
             {
               "path": "bin/WorldOverhaul.dll",
-              "version": "0.3.2.0",
-              "sha256": "88aacddad095a6f8ed0c21feb1979003e6a829b8866e12ebf466027a43c4c4a2"
+              "version": "0.3.3.0",
+              "sha256": "49aa1d0390dd2be12f54604544bbc13b2338b0dd4657d6515184e7268288f38e"
             }
           ]
         }
       },
       "injector": {
         "workshopId": "3809356665",
-        "version": "0.3.7",
-        "manifestSha256": "78856d95d98911dd15f5dabf48879931596f69ad0831b476261b5b6129c0cd9e"
+        "version": "0.3.8",
+        "manifestSha256": "a449bc73f0d09e82f45c88ffde844e3858e9a22f95fa5e89fe0eca05beab1069"
       }
     },
     "beta": {
@@ -63,12 +63,12 @@
         },
         "infrastructure": {
           "workshopId": "3802125843",
-          "version": "0.3.2",
+          "version": "0.3.3",
           "dlls": [
             {
               "path": "bin/WorldOverhaul.dll",
-              "version": "0.3.2.0",
-              "sha256": "88aacddad095a6f8ed0c21feb1979003e6a829b8866e12ebf466027a43c4c4a2"
+              "version": "0.3.3.0",
+              "sha256": "49aa1d0390dd2be12f54604544bbc13b2338b0dd4657d6515184e7268288f38e"
             }
           ]
         }
