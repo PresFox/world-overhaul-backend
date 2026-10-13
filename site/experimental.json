@@ -1,15 +1,21 @@
 {
   "schemaVersion": 1,
   "components": {
-    "core": {
-      "workshopId": "0000000000",
+    "loader": {
+      "workshopId": "3819008185",
       "version": "0.0.0",
       "dlls": [
         {
           "path": "WorldOverhaulLoader.dll",
           "version": "0.1.2.0",
           "sha256": "4fc65aa46f5bbf8257d8f08528c39ff73b42cbd8b9352d5ca39402a4433e45d1"
-        },
+        }
+      ]
+    },
+    "core": {
+      "workshopId": "3819008255",
+      "version": "0.0.0",
+      "dlls": [
         {
           "path": "bin-exp/wo_core.dll",
           "version": "0.1.0.0",
