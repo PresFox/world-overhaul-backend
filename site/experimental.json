@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "components": {
     "core": {
-      "workshopId": "",
-      "version": "",
+      "workshopId": "0000000000",
+      "version": "0.0.0",
       "dlls": [
         {
           "path": "WorldOverhaulLoader.dll",
